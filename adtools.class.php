@@ -8,10 +8,13 @@ class adtools
 		if($domain!==false)
 			$this->connect($domain);
 	}
+	//Escape invalid characters in ldap query
 	function ldap_query_escape($string)
 	{
 		return str_replace(array('\\','*','(',')',),array('\\00','\\2A','\\28','\\29'),$string);
 	}
+	
+	//Connect and bind using config file
 	function connect($domain)
 	{
 		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
@@ -34,7 +37,8 @@ class adtools
 		$this->ad=$ad;
 		$this->dn=$domain['dn'];
 	}
-	
+
+	//Find an object in AD
 	function find_object($name,$base_dn=false,$type='user',$return_all_info=false)
 	{
 		if($base_dn===false)
@@ -113,7 +117,9 @@ class adtools
 		$userdata["unicodePwd"] = $newPassw;
 		return $userdata;
 	}
-	function change_passord($dn,$password) //Reset password for user
+
+	//Reset password for user
+	function change_passord($dn,$password)
 	{
 		return ldap_mod_replace($this->ad,$dn,$this->pwd_encryption($password));
 	}
