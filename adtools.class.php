@@ -106,8 +106,9 @@ class adtools
 			return $entries[0]['dn'];
 		elseif(count($fields)==1)
 		{
+			$fields[0]=strtolower($fields[0]);
 			if(!empty($entries[0][$fields[0]]))
-				return $entries[0][$fields[0]][0];
+				return $entries[0][$fields[0]];
 			else
 			{
 				$this->error=sprintf(_('Field %s is empty'),$fields[0]);
