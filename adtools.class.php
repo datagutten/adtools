@@ -106,7 +106,9 @@ class adtools
 		}
 		return $extract;
 	}
-	//http://www.youngtechleads.com/how-to-modify-active-directory-passwords-through-php/
+
+	//Encode the password for AD
+	//Source: http://www.youngtechleads.com/how-to-modify-active-directory-passwords-through-php/
 	function pwd_encryption( $newPassword ) {
 		$newPassword = "\"" . $newPassword . "\"";
 		$len = strlen( $newPassword );
@@ -114,14 +116,13 @@ class adtools
 		for ( $i = 0; $i < $len; $i++ ){
 			$newPassw .= "{$newPassword{$i}}\000";
 		}
-		$userdata["unicodePwd"] = $newPassw;
-		return $userdata;
+		return $newPassw;
 	}
 
 	//Reset password for user
 	function change_passord($dn,$password)
 	{
-		return ldap_mod_replace($this->ad,$dn,$this->pwd_encryption($password));
+		return ldap_mod_replace($this->ad,$dn,array('unicodePwd'=>$this->pwd_encryption($password)));
 	}
 	function dsmod_password($dn,$password)
 	{
