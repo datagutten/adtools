@@ -3,9 +3,10 @@ class adtools
 {
 	public $ad=false;
 	public $dn=false;
-	function __construct($domain)
+	function __construct($domain=false)
 	{
-		$this->connect($domain);
+		if($domain!==false)
+			$this->connect($domain);
 	}
 	function ldap_query_escape($string)
 	{
@@ -122,7 +123,8 @@ class adtools
 	}
 	function __destruct()
 	{
-	    ldap_unbind($this->ad);
+		if(is_object($this->ad))
+			ldap_unbind($this->ad);
 	}
 }
 ?>
