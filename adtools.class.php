@@ -43,13 +43,17 @@ class adtools
 	}
 
 	//Find an object in AD
-	function find_object($name,$base_dn=false,$type='user',$return_all_info=false)
+	function find_object($name,$base_dn=false,$type='user',$fields=false)
 	{
 		if($base_dn===false)
 			$base_dn=$this->dn;
 
+		if($fields!==false && !is_array($fields))
+			throw new Exception("Fields must be array or false");
 		if($type=='user')
-			$result=ldap_search($this->ad,$base_dn,$q="(displayName=$name)",array('sAMAccountName'));
+			$result=ldap_search($this->ad,$base_dn,$q="(displayName=$name)",($fields===false ? array('sAMAccountName'):$fields));
+		elseif($type=='username')
+			$result=ldap_search($this->ad,$base_dn,$q="(sAMAccountName=$name)",($fields===false ? array('sAMAccountName'):$fields));
 		elseif($type=='computer')
 			$result=ldap_search($this->ad,$base_dn,$q="(name=$name)",array('name'));
 		else
@@ -66,8 +70,18 @@ class adtools
 			$this->error=sprintf(_('No hits for query %s in %s'),$q,$base_dn);
 			return false;
 		}
-		if($return_all_info===false)
+		if($fields===false)
 			return $entries[0]['dn'];
+		elseif(count($fields)==1)
+		{
+			if(!empty($entries[0][$fields[0]]))
+				return $entries[0][$fields[0]][0];
+			else
+			{
+				$this->error=sprintf(_('Field %s is empty'),$fields[0]);
+				return false;
+			}
+		}
 		else
 			return $entries[0];
 	}
