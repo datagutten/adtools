@@ -4,6 +4,7 @@ class adtools
 	public $ad=false;
 	public $dn=false;
 	public $error;
+	public $domain; //Domain name
 	function __construct($domain=false)
 	{
 		if($domain!==false)
@@ -14,7 +15,7 @@ class adtools
 	{
 		return str_replace(array('\\','*','(',')',),array('\\00','\\2A','\\28','\\29'),$string);
 	}
-	
+
 	//Connect and bind using config file
 	function connect($domain)
 	{
@@ -40,6 +41,7 @@ class adtools
 		$bd = ldap_bind($ad,$domain['username'],$domain['password']) or trigger_error("Couldn't bind to AD!",E_USER_ERROR);
 		$this->ad=$ad;
 		$this->dn=$domain['dn'];
+		$this->domain=$domain['domain'];
 	}
 
 	//Find an object in AD
