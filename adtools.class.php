@@ -19,9 +19,6 @@ class adtools
 	//Connect and bind using config file
 	function connect($domain)
 	{
-		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
-		//http://serverfault.com/questions/136888/ssl-certifcate-request-s2003-dc-ca-dns-name-not-avaiable/705724#705724
-
 		require 'domains.php';
 		if(!isset($domains[$domain]))
 		{
@@ -29,19 +26,52 @@ class adtools
 			return false;
 		}
 		$domain=$domains[$domain];
-		if(isset($ldaps))
-			$ad = ldap_connect("ldaps://".$domain['domain']) or trigger_error("Couldn't connect to AD!",E_USER_ERROR);
+		if(isset($domain['ldaps']))
+			$ldaps=true;
 		else
-			$ad = ldap_connect("ldap://".$domain['domain']) or trigger_error("Couldn't connect to AD!",E_USER_ERROR);
+			$ldaps=false;
 
-		ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
-		if (!ldap_set_option($ad, LDAP_OPT_REFERRALS, 0))
-			exit('Failed to set opt referrals to 0');
-
-		$bd = ldap_bind($ad,$domain['username'],$domain['password']) or trigger_error("Couldn't bind to AD!",E_USER_ERROR);
-		$this->ad=$ad;
 		$this->dn=$domain['dn'];
 		$this->domain=$domain['domain'];
+		return $this->connect_and_bind($domain['domain'],$domain['username'],$domain['password'],$ldaps);
+	}
+	//Connect and bind using specified credentials
+	function connect_and_bind($domain,$username,$password,$ldaps=false)
+	{
+		//http://php.net/manual/en/function.ldap-bind.php#73718
+		if (preg_match('/[^a-zA-Z@\.\-]/',$username) || preg_match('/[^a-zA-Z0-9\x20!@#$%^&*()+\-]/',$password))
+		{
+			$this->error=_('Invalid characters in username or password');
+			return false;
+		}
+
+		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
+		//http://serverfault.com/questions/136888/ssl-certifcate-request-s2003-dc-ca-dns-name-not-avaiable/705724#705724
+		//print_r(array($domain,$username,$password));
+		if($ldaps)
+			$this->ad=ldap_connect("ldaps://".$domain);
+		else
+			$this->ad=ldap_connect("ldap://".$domain);
+		if($this->ad===false)
+		{
+			$this->error=ldap_error($this->ad);
+			return false;
+		}
+		ldap_set_option($this->ad, LDAP_OPT_PROTOCOL_VERSION, 3);
+		if (!ldap_set_option($this->ad, LDAP_OPT_REFERRALS, 0))
+		{
+			$this->error='Failed to set opt referrals to 0';
+			return false;
+		}
+
+		if(!$bind=ldap_bind($this->ad,$username,$password))
+		{
+			//http://php.net/manual/en/function.ldap-bind.php#103034
+			if(!ldap_get_option($handle, LDAP_OPT_DIAGNOSTIC_MESSAGE, $this->error)) //Try to get extended error message
+				$this->error=ldap_error($this->ad);
+			return false;
+		}
+		return true;
 	}
 
 	//Find an object in AD
