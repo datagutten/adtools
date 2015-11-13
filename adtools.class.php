@@ -3,6 +3,7 @@ class adtools
 {
 	public $ad=false;
 	public $dn=false;
+	public $error;
 	function __construct($domain=false)
 	{
 		if($domain!==false)
@@ -22,7 +23,10 @@ class adtools
 
 		require 'domains.php';
 		if(!isset($domains[$domain]))
-			trigger_error("Invalid domain: $domain",E_USER_ERROR);
+		{
+			$this->error=sprintf(_('Domain %s not found in config file'),$domain);
+			return false;
+		}
 		$domain=$domains[$domain];
 		if(isset($ldaps))
 			$ad = ldap_connect("ldaps://".$domain['domain']) or trigger_error("Couldn't connect to AD!",E_USER_ERROR);
@@ -54,12 +58,12 @@ class adtools
 
 		if($entries['count']>1)
 		{
-			echo "Multiple hits for $name\n";
+			$this->error=sprintf(_('Multiple hits for %s'),$name);
 			return false;
 		}
 		if($entries['count']==0)
 		{
-			echo "No hits for query $q in $base_dn\n";
+			$this->error=sprintf(_('No hits for query %s in %s'),$q,$base_dn);
 			return false;
 		}
 		if($return_all_info===false)
