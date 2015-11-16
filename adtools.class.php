@@ -118,6 +118,23 @@ class adtools
 		else
 			return $entries[0];
 	}
+	//Create a login form
+	function login_form()
+	{
+		return '<form id="form1" name="form1" method="post">
+  <p>
+    <label for="username">'._('Username').':</label>
+    <input type="text" name="username" id="username">
+  </p>
+  <p>
+    <label for="password">'._('Password').':</label>
+    <input type="password" name="password" id="password">
+  </p>
+  <p>
+    <input type="submit" name="submit" id="submit" value="Submit">
+  </p>
+</form>';
+	}
 	
 	//-----------old---------------
 
