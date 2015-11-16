@@ -74,6 +74,41 @@ class adtools
 		return true;
 	}
 
+	//Do a ldap query and get results
+	function query($query,$base_dn,$fields)
+	{
+		$result=ldap_search($this->ad,$base_dn,$query,$fields);
+		$entries=ldap_get_entries($this->ad,$result);
+		if($entries['count']>1)
+		{
+			$this->error=sprintf(_('Multiple hits for %s'),$name);
+			return false;
+		}
+		if($entries['count']==0)
+		{
+			$this->error=sprintf(_('No hits for query %s in %s'),$query,$base_dn);
+			return false;
+		}
+		if($fields===false)
+			return $entries[0]['dn'];
+		elseif(count($fields)==1)
+		{
+			if(!empty($entries[0][$fields[0]]))
+			{
+				if(is_array($entries[0][$fields[0]]))
+					return $entries[0][$fields[0]][0];
+				else
+					return $entries[0][$fields[0]];
+			}
+			else
+			{
+				$this->error=sprintf(_('Field %s is empty'),$fields[0]);
+				return false;
+			}
+		}
+		else
+			return $entries[0];
+	}
 	//Find an object in AD
 	function find_object($name,$base_dn=false,$type='user',$fields=false)
 	{
