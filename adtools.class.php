@@ -232,9 +232,9 @@ class adtools
 	{
 		return ldap_mod_replace($this->ad,$dn,array('unicodePwd'=>$this->pwd_encryption($password)));
 	}
-	function dsmod_password($dn,$password)
+	function dsmod_password($dn,$password,$mustchpwd='no',$pwdnewerexpires='no')
 	{
-		return "dsmod user \"{$dn}\" -pwd $password -mustchpwd yes -pwdneverexpires no\r\n";
+		return sprintf('dsmod user "%s" -pwd %s -mustchpwd %s -pwdneverexpires %s',$dn,$password,$mustchpwd,$pwdnewerexpires)."\r\n";
 	}
 	function __destruct()
 	{
