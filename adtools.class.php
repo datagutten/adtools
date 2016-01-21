@@ -78,10 +78,15 @@ class adtools
 	function query($query,$base_dn,$fields)
 	{
 		$result=ldap_search($this->ad,$base_dn,$query,$fields);
+		if($result===false)
+		{
+			$this->error=sprintf(_('Search for %s returned false'),$query);
+			return false;
+		}
 		$entries=ldap_get_entries($this->ad,$result);
 		if($entries['count']>1)
 		{
-			$this->error=sprintf(_('Multiple hits for %s'),$name);
+			$this->error=sprintf(_('Multiple hits for %s'),$query);
 			return false;
 		}
 		if($entries['count']==0)
