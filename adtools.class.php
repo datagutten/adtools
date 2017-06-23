@@ -189,7 +189,7 @@ class adtools
 	//-----------old---------------
 
 	//http://www.morecavalier.com/index.php?whom=Apps%2FLDAP+timestamp+converter
-	function convert_AD_date ($ad_date) {
+	function microsoft_timestamp_to_unix ($ad_date) {
 	
 		if ($ad_date == 0) {
 			return '0000-00-00';
@@ -204,9 +204,8 @@ class adtools
 		// Therefore, 1900 wasn't a leap year but 2000 was."
 	
 		$unixTimeStamp=intval($secsAfterADEpoch-$AD2Unix);
-		$myDate = date("Y-m-d H:i:s", $unixTimeStamp); // formatted date
 	
-		return $myDate;
+		return $unixTimeStamp;
 	}
 	function unix_timestamp_to_microsoft($unix_timestamp)
 	{
