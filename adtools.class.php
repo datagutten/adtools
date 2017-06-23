@@ -179,6 +179,12 @@ class adtools
   </p>
 </form>';
 	}
+	//Move an object to another OU
+	function move($dn,$newparent)
+	{
+		$cn=preg_replace('/(CN=.+?),[A-Z]{2}.+/','$1',$dn);
+		return ldap_rename($this->ad,$dn,$cn,$newparent,true);
+	}
 	
 	//-----------old---------------
 
