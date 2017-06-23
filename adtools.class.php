@@ -43,7 +43,7 @@ class adtools
 	function connect_and_bind($domain,$username,$password,$ldaps=false)
 	{
 		//http://php.net/manual/en/function.ldap-bind.php#73718
-		if (preg_match('/[^a-zA-Z@\.\-]/',$username) || preg_match('/[^a-zA-Z0-9\x20!@#$%^&*()+\-]/',$password))
+		if(preg_match('/[^a-zA-Z@\.\-0-9]/',$username) || preg_match('/[^a-zA-Z0-9\x20!@#$%^&*()+\-]/',$password))
 		{
 			$this->error=_('Invalid characters in username or password');
 			return false;
