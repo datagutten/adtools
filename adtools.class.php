@@ -62,6 +62,7 @@ class adtools
 			return false;
 		}
 		ldap_set_option($this->ad, LDAP_OPT_PROTOCOL_VERSION, 3);
+		ldap_set_option($this->ad, LDAP_OPT_NETWORK_TIMEOUT, 1);
 		if (!ldap_set_option($this->ad, LDAP_OPT_REFERRALS, 0))
 		{
 			$this->error='Failed to set opt referrals to 0';
