@@ -8,7 +8,11 @@ class adtools
 	function __construct($domain=false)
 	{
 		if($domain!==false)
-			$this->connect($domain);
+		{
+			$status=$this->connect($domain);
+			if($status===false)
+				throw new Exception($this->error);
+		}
 	}
 	//Escape invalid characters in ldap query
 	function ldap_query_escape($string)
