@@ -72,8 +72,7 @@ class adtools
 		if(!$bind=ldap_bind($this->ad,$username,$password))
 		{
 			//http://php.net/manual/en/function.ldap-bind.php#103034
-			if(!ldap_get_option($handle, LDAP_OPT_DIAGNOSTIC_MESSAGE, $this->error)) //Try to get extended error message
-				$this->error=ldap_error($this->ad);
+			$this->error=ldap_error($this->ad);
 			return false;
 		}
 		return true;
@@ -129,6 +128,8 @@ class adtools
 			throw new Exception("Fields must be array or false");
 		if($type=='user')
 			$result=ldap_search($this->ad,$base_dn,$q="(displayName=$name)",($fields===false ? array('sAMAccountName'):$fields));
+		elseif($type=='upn')
+			$result=ldap_search($this->ad,$base_dn,$q="(userPrincipalName=$name)",($fields===false ? array('userPrincipalName'):$fields));
 		elseif($type=='username')
 			$result=ldap_search($this->ad,$base_dn,$q="(sAMAccountName=$name)",($fields===false ? array('sAMAccountName'):$fields));
 		elseif($type=='computer')
