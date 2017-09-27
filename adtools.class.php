@@ -245,7 +245,18 @@ class adtools
 	//Reset password for user
 	function change_passord($dn,$password)
 	{
-		return ldap_mod_replace($this->ad,$dn,array('unicodePwd'=>$this->pwd_encryption($password)));
+		if(empty($dn) || empty($password))
+		{
+			$this->error='DN eller passord er ikke opgitt';
+			return false;
+		}
+
+		$result=ldap_mod_replace($this->ad,$dn,array('unicodePwd'=>$this->pwd_encryption($password)));
+		if($result===false)
+		{
+			$this->error=ldap_error($this->ad);
+			return false;
+		}
 	}
 	function dsmod_password($dn,$password,$mustchpwd='no',$pwdnewerexpires='no')
 	{
