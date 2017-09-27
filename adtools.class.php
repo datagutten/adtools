@@ -40,7 +40,7 @@ class adtools
 		return $this->connect_and_bind($domain['domain'],$domain['username'],$domain['password'],$ldaps);
 	}
 	//Connect and bind using specified credentials
-	function connect_and_bind($domain,$username,$password,$ldaps=false)
+	function connect_and_bind($domain,$username,$password,$ldaps=false,$port=null)
 	{
 		//http://php.net/manual/en/function.ldap-bind.php#73718
 		if(preg_match('/[^a-zA-Z@\.\-0-9]/',$username) || preg_match('/[^a-zA-Z0-9\x20!@#$%^&*()+\-]/',$password))
@@ -53,9 +53,13 @@ class adtools
 		//http://serverfault.com/questions/136888/ssl-certifcate-request-s2003-dc-ca-dns-name-not-avaiable/705724#705724
 		//print_r(array($domain,$username,$password));
 		if($ldaps)
-			$this->ad=ldap_connect("ldaps://".$domain);
+			$protocol='ldaps';
 		else
-			$this->ad=ldap_connect("ldap://".$domain);
+			$protocol='ldap';
+		$url=sprintf('%s://%s',$protocol,$domain);
+		if(!empty($port))
+			$url.=':'.$port;
+		$this->ad=ldap_connect($url);
 		if($this->ad===false)
 		{
 			$this->error=ldap_error($this->ad);
