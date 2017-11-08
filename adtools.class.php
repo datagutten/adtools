@@ -77,6 +77,7 @@ class adtools
 		{
 			//http://php.net/manual/en/function.ldap-bind.php#103034
 			$this->error=ldap_error($this->ad);
+			$this->error=str_replace(array('Invalid credentials'),array(_('Invalid user name or password')),$this->error);
 			return false;
 		}
 		return true;
