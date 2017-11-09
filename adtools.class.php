@@ -37,7 +37,8 @@ class adtools
 
 		$this->dn=$domain['dn'];
 		$this->domain=$domain['domain'];
-		return $this->connect_and_bind($domain['domain'],$domain['username'],$domain['password'],$ldaps);
+		if(isset($domain['username']) && isset($domain['password']))
+			return $this->connect_and_bind($domain['domain'],$domain['username'],$domain['password'],$ldaps);
 	}
 	//Connect and bind using specified credentials
 	function connect_and_bind($domain,$username,$password,$ldaps=false,$port=null)
