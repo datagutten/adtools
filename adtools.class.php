@@ -5,6 +5,8 @@ class adtools
 	public $dn=false;
 	public $error;
 	public $domain; //Domain name
+	public $dc; //Domain controller
+	public $config=false;
 	function __construct($domain=false)
 	{
 		if($domain!==false)
@@ -29,6 +31,7 @@ class adtools
 			$this->error=sprintf(_('Domain %s not found in config file'),$domain);
 			return false;
 		}
+		$this->config=$domains[$domain];
 		$domain=$domains[$domain];
 		if(isset($domain['ldaps']))
 			$ldaps=true;
@@ -37,11 +40,12 @@ class adtools
 
 		$this->dn=$domain['dn'];
 		$this->domain=$domain['domain'];
+		$this->dc=$domain['dc'];
 		if(isset($domain['username']) && isset($domain['password']))
-			return $this->connect_and_bind($domain['domain'],$domain['username'],$domain['password'],$ldaps);
+			return $this->connect_and_bind($domain['domain'],$domain['username'],$domain['password'],$ldaps,$domain['dc']);
 	}
 	//Connect and bind using specified credentials
-	function connect_and_bind($domain,$username,$password,$ldaps=false,$port=null)
+	function connect_and_bind($domain=false,$username,$password,$ldaps=null,$port=false,$dc=false)
 	{
 		//http://php.net/manual/en/function.ldap-bind.php#73718
 		if(preg_match('/[^a-zA-Z@\.\-0-9]/',$username) || preg_match('/[^a-zA-Z0-9\x20!@#$%^&*()+\-]/',$password))
@@ -53,17 +57,39 @@ class adtools
 		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
 		//http://serverfault.com/questions/136888/ssl-certifcate-request-s2003-dc-ca-dns-name-not-avaiable/705724#705724
 		//print_r(array($domain,$username,$password));
-		if($ldaps)
+		if($domain===false)
+		{
+			if(isset($this->config['domain']))
+				$domain=$this->config['domain'];
+			else
+				throw new Exception('Domain not specified');
+		}
+		if($ldaps===null && isset($this->config['ldaps'])) //Use value from config file
+			$ldaps=$this->config['ldaps'];
+		if($ldaps===true)
 			$protocol='ldaps';
 		else
 			$protocol='ldap';
-		$url=sprintf('%s://%s',$protocol,$domain);
+
+		if($dc===false)
+		{
+			if(isset($this->config['dc']))
+				$dc=$this->config['dc'];
+			else
+				$dc=$domain;
+		}
+		//PHP/OpenLDAP will default to port 389 even if ldaps is specified
+		if($protocol=='ldaps' && (empty($port) || !is_numeric($port)))
+			$port=636;
+
+		$url=sprintf('%s://%s',$protocol,$dc);
 		if(!empty($port))
 			$url.=':'.$port;
+
 		$this->ad=ldap_connect($url);
 		if($this->ad===false)
 		{
-			$this->error=ldap_error($this->ad);
+			$this->error=_('Unable to connect');
 			return false;
 		}
 		ldap_set_option($this->ad, LDAP_OPT_PROTOCOL_VERSION, 3);
