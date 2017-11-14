@@ -40,7 +40,11 @@ class adtools
 
 		$this->dn=$domain['dn'];
 		$this->domain=$domain['domain'];
+
+		if(!isset($domain['dc']))
+			$domain['dc']=$domain['domain'];
 		$this->dc=$domain['dc'];
+
 		if(isset($domain['username']) && isset($domain['password']))
 			return $this->connect_and_bind($domain['domain'],$domain['username'],$domain['password'],$ldaps,$domain['dc']);
 	}
