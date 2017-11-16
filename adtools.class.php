@@ -23,30 +23,33 @@ class adtools
 	}
 
 	//Connect and bind using config file
-	function connect($domain)
+	function connect($domain_key)
 	{
 		require 'domains.php';
-		if(!isset($domains[$domain]))
+		if(!isset($domains[$domain_key]))
 		{
-			$this->error=sprintf(_('Domain %s not found in config file'),$domain);
+			$this->error=sprintf(_('Domain key %s not found in config file'),$domain_key);
 			return false;
 		}
-		$this->config=$domains[$domain];
-		$domain=$domains[$domain];
-		if(isset($domain['ldaps']))
-			$ldaps=true;
-		else
-			$ldaps=false;
+		$this->config=$domains[$domain_key];
 
-		$this->dn=$domain['dn'];
-		$this->domain=$domain['domain'];
+		if(!isset($this->config['dc']) && !isset($this->config['domain']))
+		{
+			$this->error=_('DC and/or domain must be specified in config file');
+			return false;
+		}
+		elseif(!isset($this->config['dc']))
+			$this->config['dc']=$this->config['domain'];
+		elseif(!isset($this->config['domain']))
+			$this->config['domain']=$this->config['dc'];
+		//Use default values if options not set
+		if(!isset($this->config['ldaps']))
+			$this->config['ldaps']=false;
+		if(!isset($this->config['port']))
+			$this->config['port']=false;
 
-		if(!isset($domain['dc']))
-			$domain['dc']=$domain['domain'];
-		$this->dc=$domain['dc'];
-
-		if(isset($domain['username']) && isset($domain['password']))
-			return $this->connect_and_bind($domain['domain'],$domain['username'],$domain['password'],$ldaps,$domain['dc']);
+		if(isset($this->config['username']) && isset($this->config['password']))
+			return $this->connect_and_bind($this->config['domain'],$this->config['username'],$this->config['password'],$this->config['ldaps'],$this->config['port'],$this->config['dc']);
 	}
 	//Connect and bind using specified credentials
 	function connect_and_bind($domain=false,$username,$password,$ldaps=null,$port=false,$dc=false)
@@ -168,7 +171,7 @@ class adtools
 	function find_object($name,$base_dn=false,$type='user',$fields=false)
 	{
 		if($base_dn===false)
-			$base_dn=$this->dn;
+			$base_dn=$this->config['dn'];
 
 		if($fields!==false && !is_array($fields))
 			throw new Exception("Fields must be array or false");
