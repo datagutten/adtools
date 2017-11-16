@@ -57,6 +57,11 @@ class adtools
 			$this->error=_('Invalid characters in username or password');
 			return false;
 		}
+		if(!empty($port) && !is_numeric($port))
+		{
+			unset($port);
+			trigger_error('Port number must be numeric',E_USER_WARNING);
+		}
 
 		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
 		//http://serverfault.com/questions/136888/ssl-certifcate-request-s2003-dc-ca-dns-name-not-avaiable/705724#705724
