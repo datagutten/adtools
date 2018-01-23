@@ -123,16 +123,19 @@ class adtools
 	}
 
 	//Do a ldap query and get results
-	function query($query,$base_dn,$fields,$single_result=true)
+	function query($query,$base_dn,$fields,$single_result=true,$subtree=true)
 	{
-		$result=ldap_search($this->ad,$base_dn,$query,$fields);
+		if($subtree)
+			$result=ldap_search($this->ad,$base_dn,$query,$fields);
+		else
+			$result=ldap_list($this->ad,$base_dn,$query,$fields);
 		if($result===false)
 		{
 			$this->error=sprintf(_('Search for %s returned false'),$query);
 			return false;
 		}
 		$entries=ldap_get_entries($this->ad,$result);
-		if($entries['count']>1)
+		if($entries['count']>1 && $single_result===true)
 		{
 			$this->error=sprintf(_('Multiple hits for %s'),$query);
 			return false;
