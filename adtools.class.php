@@ -273,10 +273,11 @@ class adtools
             array_push($flags, 1 << $i);
         }
     }
-    foreach($flags as $k=>&$v) {
-        $v = $v . ' '  . $flaglist[$v];
+
+    foreach($flags as $v) {
+		$flags_output[$v]=$flaglist[$v];
     }
-    return $flags;
+    return $flags_output;
 }
 
 	
