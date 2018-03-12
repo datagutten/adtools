@@ -123,15 +123,23 @@ class adtools
 	}
 
 	//Do a ldap query and get results
-	function query($query,$base_dn,$fields,$single_result=true,$subtree=true)
+	function query($query,$base_dn=false,$fields,$single_result=true,$subtree=true)
 	{
+		if(empty($base_dn))
+		{
+			if(!empty($this->config['dn']))
+				$base_dn=$this->config['dn'];
+			else
+				throw new Exception('Base DN empty and not set in config');
+		}
+
 		if($subtree)
 			$result=ldap_search($this->ad,$base_dn,$query,$fields);
 		else
 			$result=ldap_list($this->ad,$base_dn,$query,$fields);
 		if($result===false)
 		{
-			$this->error=sprintf(_('Search for %s returned false'),$query);
+			$this->error=sprintf(_('Search for %s returned false'."\n".ldap_error($this->ad)),$query);
 			return false;
 		}
 		$entries=ldap_get_entries($this->ad,$result);
@@ -178,6 +186,7 @@ class adtools
 
 		if($fields!==false && !is_array($fields))
 			throw new Exception("Fields must be array or false");
+		//---Rewrite to use query method---
 		if($type=='user')
 			$result=ldap_search($this->ad,$base_dn,$q="(displayName=$name)",($fields===false ? array('sAMAccountName'):$fields));
 		elseif($type=='upn')
