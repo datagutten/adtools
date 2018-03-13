@@ -289,6 +289,59 @@ class adtools
     return $flags_output;
 }
 
+	//Replace LDAP field names with readable names
+	function field_names($field)
+	{
+		$replace=array('givenName'=>_('First Name'),
+						'sn'=>_('Last Name'),
+						'initials'=>_('Initials'),
+						'displayName'=>_('Display Name'),
+						'description'=>_('Description'),
+						'physicalDeliveryOfficeName'=>_('Office'),
+						'telephoneNumber'=>_('Telephone Number'),
+						'otherTelephone'=>_('Telephone: Other'),
+						'E-mail-Addresses'=>_('E-Mail'),
+						'wWWHomePage'=>_('Web Page'),
+						'url'=>_('Web Page: Other'),
+						'userPrincipalName'=>_('UserLogon Name'),
+						'sAMAccountname'=>_('User logon name'), // (pre-Windows 2000)
+						'logonHours'=>_('Logon Hours'),
+						'logonWorkstation'=>_('Log On To'),
+						'lockoutTime and lockoutDuration'=>_('Account is locked out'),
+						'pwdLastSet'=>_('Password last set'),
+						'userAccountControl'=>_('Other Account Options'),
+						'accountExpires'=>_('Account Expires'),
+						'streetAddress'=>_('Street'),
+						'postOfficeBox'=>_('P.O.Box'),
+						'postalCode'=>_('Zip/Postal Code'),
+						'memberOf'=>_('Member of'),
+						'profilePath'=>_('Profile Path'),
+						'scriptPath'=>_('Logon Script'),
+						'homeDirectory'=>_('Home Folder: Local Path'),
+						'homeDrive'=>_('Home Folder: Connect'),
+						'homeDirectory'=>_('Home Folder: To'),
+						'homePhone'=>_('Home'),
+						'otherHomePhone'=>_('Home: Other'),
+						'pager'=>_('Pager'),
+						'otherPager'=>_('Pager: Other'),
+						'mobile'=>_('Mobile'),
+						'otherMobile'=>_('Mobile: Other'),
+						'facsimileTelephoneNumber'=>_('Fax'),
+						'otherFacsimileTelephoneNumber'=>_('Fax: Other'),
+						'ipPhone'=>_('IP phone'),
+						'otherIpPhone'=>_('IP phone: Other'),
+						'info'=>_('Notes'),
+						'l'=>_('City'),
+						'st'=>_('State/Province'));
+
+		foreach($replace as $find=>$replace)
+		{
+			$field=str_replace(strtolower($find),$replace,strtolower($field),$count);
+			if($count>0)
+				return $field;
+		}
+		return $field;
+	}
 	
 	//-----------old---------------
 
