@@ -178,6 +178,7 @@ class adtools
 		else
 			return $entries;
 	}
+
 	//Find an object in AD
 	function find_object($name,$base_dn=false,$type='user',$fields=false)
 	{
@@ -186,45 +187,19 @@ class adtools
 
 		if($fields!==false && !is_array($fields))
 			throw new Exception("Fields must be array or false");
-		//---Rewrite to use query method---
-		if($type=='user')
-			$result=ldap_search($this->ad,$base_dn,$q="(displayName=$name)",($fields===false ? array('sAMAccountName'):$fields));
-		elseif($type=='upn')
-			$result=ldap_search($this->ad,$base_dn,$q="(userPrincipalName=$name)",($fields===false ? array('userPrincipalName'):$fields));
-		elseif($type=='username')
-			$result=ldap_search($this->ad,$base_dn,$q="(sAMAccountName=$name)",($fields===false ? array('sAMAccountName'):$fields));
-		elseif($type=='computer')
-			$result=ldap_search($this->ad,$base_dn,$q="(name=$name)",array('name'));
-		else
-			return false;
-		$entries=ldap_get_entries($this->ad,$result);
 
-		if($entries['count']>1)
-		{
-			$this->error=sprintf(_('Multiple hits for %s'),$name);
-			return false;
-		}
-		if($entries['count']==0)
-		{
-			$this->error=sprintf(_('No hits for query %s in %s'),$q,$base_dn);
-			return false;
-		}
-		if($fields===false)
-			return $entries[0]['dn'];
-		elseif(count($fields)==1)
-		{
-			$fields[0]=strtolower($fields[0]);
-			if(!empty($entries[0][$fields[0]]))
-				return $entries[0][$fields[0]];
-			else
-			{
-				$this->error=sprintf(_('Field %s is empty'),$fields[0]);
-				return false;
-			}
-		}
+		if($type=='user')
+			return $this->query("(&(displayName=$name)(objectClass=user))",$base_dn,($fields===false ? array('sAMAccountName'):$fields),true);
+		elseif($type=='upn')
+			return $this->query("(&(userPrincipalName=$name)(objectClass=user))",$base_dn,($fields===false ? array('userPrincipalName'):$fields),true);
+		elseif($type=='username')
+			return $this->query("(&(sAMAccountName=$name)(objectClass=user))",$base_dn,($fields===false ? array('sAMAccountName'):$fields),true);
+		elseif($type=='computer')
+			return $this->query("(&(name=$name)(objectClass=computer))",$base_dn,($fields===false ? array('name'):$fields),true);
 		else
-			return $entries[0];
+			throw new Exception('Invalid type');
 	}
+
 	//Create a login form
 	function login_form()
 	{
