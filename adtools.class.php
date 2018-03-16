@@ -127,6 +127,8 @@ class adtools
 	//Do a ldap query and get results
 	function query($query,$base_dn=false,$fields,$single_result=true,$subtree=true)
 	{
+		if(!is_resource($this->ad))
+			throw new Exception('Not connected to AD');
 		if(empty($base_dn))
 		{
 			if(!empty($this->config['dn']))
