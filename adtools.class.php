@@ -2,10 +2,7 @@
 class adtools
 {
 	public $ad=false;
-	public $dn=false;
 	public $error;
-	public $domain; //Domain name
-	public $dc; //Domain controller
 	public $config=false;
 	function __construct($domain=false)
 	{
