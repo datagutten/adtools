@@ -151,7 +151,7 @@ class adtools
 		if($entries['count']==0)
 		{
 			$this->error=sprintf(_('No hits for query %s in %s'),$query,$base_dn);
-			return false;
+			return;
 		}
 		if($single_result)
 		{
