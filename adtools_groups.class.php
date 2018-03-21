@@ -50,6 +50,13 @@ class adtools_groups extends adtools
 	}
 	function member_del($user_dn,$group_dn) //Set $user_dn to empty array to remove all members from the group
 	{
-		return ldap_mod_del($this->ad,$group_dn,array('member'=>$user_dn));
+		if(ldap_mod_del($this->ad,$group_dn,array('member'=>$user_dn))===false)
+		{
+			if(is_array($user_dn))
+				$this->error=sprintf('Unable to remove all members from %s',$group_dn);
+			else
+				$this->error=sprintf('Unable to delete %s from %s',$user_dn,$group_dn);
+			return false;
+		}
 	}
 }
