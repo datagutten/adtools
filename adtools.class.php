@@ -163,12 +163,13 @@ class adtools
 				return $entries[0]['dn'];
 			elseif(count($fields)==1)
 			{
-				if(!empty($entries[0][$fields[0]]))
+				$field=strtolower($fields[0]);
+				if(!empty($entries[0][$field]))
 				{
-					if(is_array($entries[0][$fields[0]]))
-						return $entries[0][$fields[0]][0];
+					if(is_array($entries[0][$field])) //Field is array
+						return $entries[0][$field][0];
 					else
-						return $entries[0][$fields[0]];
+						return $entries[0][$field];
 				}
 				else
 				{
