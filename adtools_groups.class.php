@@ -23,6 +23,21 @@ class adtools_groups extends adtools
 		else
 		  return false;
 	}
+	function create_group_if_not_exists($group_name,$parent_ou)
+	{
+		$group_dn=sprintf('CN=%s,%s',$group_name,$parent_ou);
+		$result=ldap_list($this->ad,$parent_ou,$q=sprintf('(&(objectClass=group)(cn=%s))',$group_name),array('cn'));
+		$entries=ldap_get_entries($this->ad,$result);
+		if($entries['count']==0)
+		{
+			if($this->create_group($group_name,$group_dn)===false)
+			{
+				$this->error=sprintf('Error creating group %s: %s',$group_dn,ldap_error($this->ad));
+				return false;
+			}
+		}
+		return $group_dn;
+	}
 	function member_add($user_dn,$group_dn)
 	{
 		if(ldap_mod_add($this->ad,$group_dn,array('member'=>$user_dn))===false)
