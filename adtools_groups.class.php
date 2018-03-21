@@ -42,7 +42,6 @@ class adtools_groups extends adtools
 	{
 		if(ldap_mod_add($this->ad,$group_dn,array('member'=>$user_dn))===false)
 		{
-			throw new Exception("Error adding $user_dn to $group_dn");
 			$this->error="Error adding $user_dn to $group_dn";
 			return false;
 		}
