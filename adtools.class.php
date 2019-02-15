@@ -20,81 +20,90 @@ class adtools
 	}
 
 	//Connect and bind using config file
-	function connect($domain_key)
+
+    /**
+     * @param $domain_key
+     * @return bool
+     * @throws Exception
+     */
+    function connect($domain_key)
 	{
-		require 'domains.php';
+		$domains = require 'domains.php';
 		if(!isset($domains[$domain_key]))
-		{
-			$this->error=sprintf(_('Domain key %s not found in config file'),$domain_key);
-			return false;
-		}
+			throw new Exception(sprintf(_('Domain key %s not found in config file'),$domain_key));
+
 		$this->config=$domains[$domain_key];
 
 		if(!isset($this->config['dc']) && !isset($this->config['domain']))
-		{
-			$this->error=_('DC and/or domain must be specified in config file');
-			return false;
-		}
+			throw new Exception(_('DC and/or domain must be specified in config file'));
 		elseif(!isset($this->config['dc']))
 			$this->config['dc']=$this->config['domain'];
 		elseif(!isset($this->config['domain']))
 			$this->config['domain']=$this->config['dc'];
 		//Use default values if options not set
-		if(!isset($this->config['ldaps']))
-			$this->config['ldaps']=false;
+		if(!isset($this->config['protocol']))
+			$this->config['protocol']=null;
 		if(!isset($this->config['port']))
-			$this->config['port']=false;
+			$this->config['port']=null;
 
 		if(isset($this->config['username']) && isset($this->config['password']))
-			return $this->connect_and_bind($this->config['domain'],$this->config['username'],$this->config['password'],$this->config['ldaps'],$this->config['port'],$this->config['dc']);
+			return $this->connect_and_bind($this->config['domain'],$this->config['username'],$this->config['password'],$this->config['protocol'],$this->config['port'],$this->config['dc']);
 	}
-	//Connect and bind using specified credentials
-	function connect_and_bind($domain=false,$username,$password,$ldaps=null,$port=false,$dc=false)
+
+    /**
+     * Connect and bind using specified credentials
+     * @param string $domain
+     * @param $username
+     * @param $password
+     * @param string $protocol Set to ldap, ldaps or leave blank to use config file
+     * @param int $port
+     * @param string $dc
+     * @return bool
+     * @throws Exception
+     */
+    function connect_and_bind($domain=null, $username, $password, $protocol=null, $port=null, $dc=null)
 	{
 		//http://php.net/manual/en/function.ldap-bind.php#73718
 		if(empty($username) || empty($password))
-		{
-			$this->error=_('Username and/or password are not specified');
-			return false;
-		}
+            throw new Exception(_('Username and/or password are not specified'));
 		if(preg_match('/[^a-zA-Z@\.\,\-0-9\=]/',$username) || preg_match('/[^a-zA-Z0-9\x20!@#$%^&*()+\-]/',$password))
-		{
-			$this->error=_('Invalid characters in username or password');
-			return false;
-		}
+            throw new Exception(_('Invalid characters in username or password'));
 		if(!empty($port) && !is_numeric($port))
-		{
-			unset($port);
-			trigger_error('Port number must be numeric',E_USER_WARNING);
-		}
+			throw new Exception('Port number must be numeric');
+
 
 		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
 		//http://serverfault.com/questions/136888/ssl-certifcate-request-s2003-dc-ca-dns-name-not-avaiable/705724#705724
 		//print_r(array($domain,$username,$password));
-		if($domain===false)
+		if(empty($domain))
 		{
 			if(isset($this->config['domain']))
 				$domain=$this->config['domain'];
 			else
 				throw new Exception('Domain not specified');
 		}
-		if($ldaps===null && isset($this->config['ldaps'])) //Use value from config file
-			$ldaps=$this->config['ldaps'];
-		if($ldaps===true)
-			$protocol='ldaps';
-		else
-			$protocol='ldap';
+		if(empty($protocol))
+        {
+            if(!empty($this->config['protocol'])) //Use value from config file
+                $protocol = $this->config['protocol'];
+            else
+                $protocol = 'ldap';
+        }
 
-		if($dc===false)
+        if(!is_string($protocol) || ($protocol!='ldap' && $protocol!='ldaps'))
+            throw new Exception('Invalid protocol specified');
+
+        //PHP/OpenLDAP will default to port 389 even if ldaps is specified
+        if($protocol=='ldaps' && (empty($port) || !is_numeric($port)))
+            $port=636;
+
+		if(empty($dc))
 		{
 			if(isset($this->config['dc']))
 				$dc=$this->config['dc'];
 			else
 				$dc=$domain;
 		}
-		//PHP/OpenLDAP will default to port 389 even if ldaps is specified
-		if($protocol=='ldaps' && (empty($port) || !is_numeric($port)))
-			$port=636;
 
 		$url=sprintf('%s://%s',$protocol,$dc);
 		if(!empty($port))
@@ -102,30 +111,36 @@ class adtools
 
 		$this->ad=ldap_connect($url);
 		if($this->ad===false)
-		{
-			$this->error=_('Unable to connect');
-			return false;
-		}
+            throw new Exception(_('Unable to connect'));
+
 		ldap_set_option($this->ad, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($this->ad, LDAP_OPT_NETWORK_TIMEOUT, 1);
 		if (!ldap_set_option($this->ad, LDAP_OPT_REFERRALS, 0))
-		{
-			$this->error='Failed to set opt referrals to 0';
-			return false;
-		}
+            throw new Exception('Failed to set opt referrals to 0');
 
-		if(!$bind=ldap_bind($this->ad,$username,$password))
+		if(ldap_bind($this->ad,$username,$password)===false)
 		{
 			//http://php.net/manual/en/function.ldap-bind.php#103034
-			$this->error=ldap_error($this->ad);
-			$this->error=str_replace(array('Invalid credentials'),array(_('Invalid user name or password')),$this->error);
-			return false;
+			if(ldap_errno($this->ad)===49)
+                throw new Exception(_('Invalid user name or password'));
+			else
+			    throw new Exception(ldap_error($this->ad));
 		}
+
 		return true;
 	}
 
-	//Do a ldap query and get results
-	function query($query,$base_dn=false,$fields,$single_result=true,$subtree=true)
+    /**
+     * Do a ldap query and get results
+     * @param $query
+     * @param string $base_dn
+     * @param $fields
+     * @param bool $single_result
+     * @param bool $subtree
+     * @return array
+     * @throws Exception
+     */
+    function query($query, $base_dn=null, $fields, $single_result=true, $subtree=true)
 	{
 		if(!is_resource($this->ad))
 			throw new Exception('Not connected to AD');
@@ -143,19 +158,18 @@ class adtools
 			$result=ldap_list($this->ad,$base_dn,$query,$fields);
 		if($result===false)
 		{
-			$this->error=sprintf(_('Search for %s returned false'."\n".ldap_error($this->ad)),$query);
-			return false;
+		    throw new Exception(ldap_error($this->ad));
 		}
 		$entries=ldap_get_entries($this->ad,$result);
 		if($entries['count']>1 && $single_result===true)
 		{
-			$this->error=sprintf(_('Multiple hits for %s'),$query);
-			return false;
+			throw new Exception(sprintf(_('Multiple hits for %s, but single result was expected'),$query));
 		}
 		if($entries['count']==0)
 		{
+		    //TODO: Create custom exception for no hits?
 			$this->error=sprintf(_('No hits for query %s in %s'),$query,$base_dn);
-			return;
+			return null;
 		}
 		if($single_result)
 		{
@@ -173,8 +187,7 @@ class adtools
 				}
 				else
 				{
-					$this->error=sprintf(_('Field %s is empty'),$fields[0]);
-					return false;
+					throw new Exception(sprintf(_('Field %s is empty'),$fields[0]));
 				}
 			}
 			else
