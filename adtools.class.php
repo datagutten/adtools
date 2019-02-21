@@ -1,27 +1,42 @@
 <?php
 class adtools
 {
-	public $ad=false;
+    /**
+     * @var $ad resource LDAP link identifier
+     */
+    public $ad;
+    /**
+     * @var $error string Error message
+     */
 	public $error;
-	public $config=false;
-	function __construct($domain=false)
+    /**
+     * @var $config array Configuration loaded from config file
+     */
+    public $config=array();
+
+    /**
+     * adtools constructor.
+     * @param string $domain domain key from config file to connect to
+     * @throws Exception
+     */
+    function __construct($domain=null)
 	{
-		if($domain!==false)
-		{
-			$status=$this->connect($domain);
-			if($status===false)
-				throw new Exception($this->error);
-		}
+		if(!empty($domain))
+			$this->connect($domain);
 	}
-	//Escape invalid characters in ldap query
-	function ldap_query_escape($string)
+
+    /**
+     * Escape invalid characters in ldap query
+     * @param $string string Query string to escape
+     * @return mixed
+     */
+    function ldap_query_escape($string)
 	{
 		return str_replace(array('\\','*','(',')',),array('\\00','\\2A','\\28','\\29'),$string);
 	}
 
-	//Connect and bind using config file
-
     /**
+     * Connect and bind using config file
      * @param $domain_key
      * @return bool
      * @throws Exception
