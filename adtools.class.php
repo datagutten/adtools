@@ -429,4 +429,3 @@ class adtools
 			ldap_unbind($this->ad);
 	}
 }
-?>
