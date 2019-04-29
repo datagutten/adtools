@@ -1,4 +1,5 @@
 <?php
+require 'LdapException.php';
 class adtools
 {
     /**
@@ -401,24 +402,27 @@ class adtools
 		return $newPassw;
 	}
 
-	//Reset password for user
-	function change_passord($dn,$password,$must_change_password=false)
+    /**
+     * Reset password for user
+     * @param string $dn User DN
+     * @param string $password Password
+     * @param bool $must_change_password
+     * @throws InvalidArgumentException
+     * @throws LdapException
+     */
+	function change_password($dn,$password,$must_change_password=false)
 	{
 		if(empty($dn) || empty($password))
-		{
-			$this->error='DN eller passord er ikke opgitt';
-			return false;
-		}
+			throw new InvalidArgumentException('DN or password is empty or not specified');
+
 		$fields=array('unicodePwd'=>$this->pwd_encryption($password));
 		if($must_change_password!==false)
 			$fields['pwdLastSet']=0;
 		$result=ldap_mod_replace($this->ad,$dn,$fields);
 		if($result===false)
-		{
-			$this->error=ldap_error($this->ad);
-			return false;
-		}
+		    throw new LdapException($this->ad);
 	}
+
 	function dsmod_password($dn,$password,$mustchpwd='no',$pwdnewerexpires='no')
 	{
 		return sprintf('dsmod user "%s" -pwd %s -mustchpwd %s -pwdneverexpires %s',$dn,$password,$mustchpwd,$pwdnewerexpires)."\r\n";
