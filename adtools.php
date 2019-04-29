@@ -396,7 +396,6 @@ class adtools
 						'scriptPath'=>_('Logon Script'),
 						'homeDirectory'=>_('Home Folder: Local Path'),
 						'homeDrive'=>_('Home Folder: Connect'),
-						'homeDirectory'=>_('Home Folder: To'),
 						'homePhone'=>_('Home'),
 						'otherHomePhone'=>_('Home: Other'),
 						'pager'=>_('Pager'),
