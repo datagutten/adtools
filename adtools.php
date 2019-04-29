@@ -369,7 +369,7 @@ class adtools
 	//Replace LDAP field names with readable names
 	function field_names($field)
 	{
-		$replace=array('givenName'=>_('First Name'),
+		$replacements=array('givenName'=>_('First Name'),
 						'sn'=>_('Last Name'),
 						'initials'=>_('Initials'),
 						'displayName'=>_('Display Name'),
@@ -410,7 +410,7 @@ class adtools
 						'l'=>_('City'),
 						'st'=>_('State/Province'));
 
-		foreach($replace as $find=>$replace)
+		foreach($replacements as $find=>$replace)
 		{
 			$field=str_replace(strtolower($find),$replace,strtolower($field),$count);
 			if($count>0)
