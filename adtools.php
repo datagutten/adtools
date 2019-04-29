@@ -216,6 +216,7 @@ class adtools
 
     /**
      * Do a ldap query and get results
+     * Replaced by ldap_query
      * @param $query
      * @param string $base_dn
      * @param $fields
@@ -281,7 +282,15 @@ class adtools
 			return $entries;
 	}
 
-	//Find an object in AD
+    /**
+     * Find an object in AD
+     * @param $name
+     * @param bool $base_dn
+     * @param string $type
+     * @param bool $fields
+     * @return array
+     * @throws Exception
+     */
 	function find_object($name,$base_dn=false,$type='user',$fields=false)
 	{
 		if($base_dn===false)
@@ -302,7 +311,12 @@ class adtools
 			throw new Exception('Invalid type');
 	}
 
-	//Create a login form
+
+
+    /**
+     * Create a HTML login form
+     * @return string HTML code
+     */
 	function login_form()
 	{
 		return '<form id="form1" name="form1" method="post">
@@ -319,11 +333,19 @@ class adtools
   </p>
 </form>';
 	}
-	//Move an object to another OU
+
+    /**
+     * Move an object to another OU
+     * @param $dn
+     * @param $newparent
+     * @throws LdapException
+     */
 	function move($dn,$newparent)
 	{
 		$cn=preg_replace('/(CN=.+?),[A-Z]{2}.+/','$1',$dn);
-		return ldap_rename($this->ad,$dn,$cn,$newparent,true);
+		$result = ldap_rename($this->ad,$dn,$cn,$newparent,true);
+		if($result===false)
+		    throw new LdapException($this->ad);
 	}
 
 	//https://stackoverflow.com/a/43791392/2630074
