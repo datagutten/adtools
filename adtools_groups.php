@@ -1,6 +1,4 @@
 <?php
-if(!class_exists('adtools'))
-	require_once 'adtools.class.php';
 class adtools_groups extends adtools
 {
 	function __construct($domain)
