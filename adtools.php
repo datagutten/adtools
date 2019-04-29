@@ -359,7 +359,7 @@ class adtools
             array_push($flags, 1 << $i);
         }
     }
-
+    $flags_output = array();
     foreach($flags as $v) {
 		$flags_output[$v]=$flaglist[$v];
     }
@@ -451,6 +451,7 @@ class adtools
 
 	function extract_field($objects,$field)
 	{
+	    $extract = array();
 		foreach($objects as $key=>$object)
 		{
 			$extract[$key]=$object[$field][0];
