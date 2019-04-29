@@ -151,6 +151,10 @@ class adtools
      * @param $query
      * @param array $options
      * @return array
+     * @throws InvalidArgumentException
+     * @throws LdapException Error from LDAP
+     * @throws NoHitsException No hits found
+     * @throws MultipleHitsException Multiple hits when single was expected
      * @throws Exception
      */
     function ldap_query($query, $options=array())
