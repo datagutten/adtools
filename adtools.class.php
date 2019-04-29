@@ -149,6 +149,70 @@ class adtools
     /**
      * Do a ldap query and get results
      * @param $query
+     * @param array $options
+     * @return array
+     * @throws Exception
+     */
+    function ldap_query($query, $options=array())
+    {
+        $options_default = array('single_result' => true, 'subtree' => true, 'attributes' => array('dn'));
+        $options = array_merge($options_default, $options);
+
+        if(!is_resource($this->ad))
+            throw new Exception('Not connected to AD');
+        if(empty($options['base_dn']))
+        {
+            if(!empty($this->config['dn']))
+                $options['base_dn']=$this->config['dn'];
+            else
+                throw new InvalidArgumentException('Base DN empty and not set in config');
+        }
+
+        if($options['subtree'])
+            $result=ldap_search($this->ad,$options['base_dn'],$query,$options['fields']);
+        else
+            $result=ldap_list($this->ad,$options['base_dn'],$query,$options['fields']);
+
+        if($result===false)
+            throw new LdapException($this->ad);
+
+        $entries=ldap_get_entries($this->ad,$result);
+
+        if($entries['count']==0)
+        {
+            //$this->error=sprintf(_('No hits for query %s in %s'),$query,$options['base_dn']);
+            throw new NoHitsException($query);
+        }
+        if($options['single_result']===true)
+        {
+            if($entries['count']>1)
+                throw new MultipleHitsException($query);
+
+            if($options['attributes']==1)
+            {
+                $field=strtolower($options['attributes'][0]);
+                if(!empty($entries[0][$field]))
+                {
+                    if(is_array($entries[0][$field])) //Field is array
+                        return $entries[0][$field][0];
+                    else
+                        return $entries[0][$field];
+                }
+                else
+                {
+                    throw new Exception(sprintf(_('Field %s is empty'),$field));
+                }
+            }
+            else
+                return $entries[0];
+        }
+        else
+            return $entries;
+    }
+
+    /**
+     * Do a ldap query and get results
+     * @param $query
      * @param string $base_dn
      * @param $fields
      * @param bool $single_result
