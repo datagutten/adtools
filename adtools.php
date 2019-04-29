@@ -173,9 +173,9 @@ class adtools
         }
 
         if($options['subtree'])
-            $result=ldap_search($this->ad,$options['base_dn'],$query,$options['fields']);
+            $result=ldap_search($this->ad,$options['base_dn'],$query,$options['attributes']);
         else
-            $result=ldap_list($this->ad,$options['base_dn'],$query,$options['fields']);
+            $result=ldap_list($this->ad,$options['base_dn'],$query,$options['attributes']);
 
         if($result===false)
             throw new LdapException($this->ad);
