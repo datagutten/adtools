@@ -1,0 +1,16 @@
+{
+    "name": "datagutten/adtools",
+    "description": "Tools for working with Active Directory from PHP",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "datagutten",
+            "email": "datagutten@datagutten.net"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "classmap": ["adtools.php", "adtools_groups.php", "LdapException.php", "MultipleHitsException.php", "NoHitsException.php"]
+    }
+}
