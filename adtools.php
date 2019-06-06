@@ -220,6 +220,7 @@ class adtools
      * @param bool $subtree
      * @return array
      * @throws Exception
+     * @deprecated Use ldap_query instead
      */
     function query($query, $base_dn=null, $fields, $single_result=true, $subtree=true)
 	{
@@ -312,6 +313,7 @@ class adtools
     /**
      * Create a HTML login form
      * @return string HTML code
+     * @deprecated Should be replaced with something else
      */
 	function login_form()
 	{
