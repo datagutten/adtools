@@ -39,7 +39,6 @@ class adtools
     /**
      * Connect and bind using config file
      * @param $domain_key
-     * @return bool
      * @throws Exception
      */
     function connect($domain_key)
@@ -63,7 +62,7 @@ class adtools
 			$this->config['port']=null;
 
 		if(isset($this->config['username']) && isset($this->config['password']))
-			return $this->connect_and_bind($this->config['domain'],$this->config['username'],$this->config['password'],$this->config['protocol'],$this->config['port'],$this->config['dc']);
+			$this->connect_and_bind($this->config['domain'],$this->config['username'],$this->config['password'],$this->config['protocol'],$this->config['port'],$this->config['dc']);
 	}
 
     /**
@@ -74,7 +73,6 @@ class adtools
      * @param string $protocol Set to ldap, ldaps or leave blank to use config file
      * @param int $port
      * @param string $dc
-     * @return bool
      * @throws Exception
      */
     function connect_and_bind($domain=null, $username, $password, $protocol=null, $port=null, $dc=null)
@@ -142,8 +140,6 @@ class adtools
 			else
 			    throw new Exception(ldap_error($this->ad));
 		}
-
-		return true;
 	}
 
     /**
