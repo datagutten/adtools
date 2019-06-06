@@ -12,6 +12,16 @@ class adtools_utils
     }
 
     /**
+     * Extract the name from an OU DN
+     * @param string $ou OU DN
+     * @return string OU name
+     */
+    public static function ou_name($ou)
+    {
+        return preg_replace('/OU=(.+?),[A-Z]{2}=.+/','$1',$ou);
+    }
+
+    /**
      * Replace LDAP field names with readable names
      * @param string $field LDAP field name
      * @return string Human friendly field name
