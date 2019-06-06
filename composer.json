@@ -11,6 +11,6 @@
     ],
     "require": {"ext-ldap":  "*"},
     "autoload": {
-        "classmap": ["adtools.php", "adtools_groups.php", "LdapException.php", "MultipleHitsException.php", "NoHitsException.php"]
+        "classmap": ["adtools.php", "adtools_groups.php", "adtools_utils.php", "LdapException.php", "MultipleHitsException.php", "NoHitsException.php"]
     }
 }
