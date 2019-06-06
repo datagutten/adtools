@@ -9,7 +9,7 @@
             "email": "datagutten@datagutten.net"
         }
     ],
-    "require": {},
+    "require": {"ext-ldap":  "*"},
     "autoload": {
         "classmap": ["adtools.php", "adtools_groups.php", "LdapException.php", "MultipleHitsException.php", "NoHitsException.php"]
     }
