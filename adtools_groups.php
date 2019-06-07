@@ -10,7 +10,7 @@ class adtools_groups extends adtools
      * Create a group
      * @param string $object_name
      * @param string $dn
-     * @return bool
+     * @throws LdapException
      */
 	function create_group($object_name,$dn)
 	{
@@ -23,10 +23,8 @@ class adtools_groups extends adtools
 
 		ldap_add($this->ad,$dn,$addgroup_ad);
 		
-		if(ldap_error($this->ad) == "Success")
-		  return true;
-		else
-		  return false;
+		if(ldap_error($this->ad) != "Success")
+		  throw new LdapException($this->ad);
 	}
 
     /**
