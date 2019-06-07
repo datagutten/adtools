@@ -29,8 +29,8 @@ class adtools_groups extends adtools
 
     /**
      * Create a group if it not exists
-     * @param $group_name Group name
-     * @param $parent_ou Parent OU
+     * @param string $group_name Group name
+     * @param string $parent_ou Parent OU
      * @return string Group DN
      * @throws LdapException
      */
