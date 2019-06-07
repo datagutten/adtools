@@ -145,15 +145,21 @@ class adtools
     /**
      * Do a ldap query and get results
      * @param $query
-     * @param array $options
-     * @return array
+     * @param array $options {
+     * Query options
+     *      @type bool $single_result Assume there should be only one result, throw exception if multiple is found
+     *      @type bool $subtree Search sub tree
+     *      @type array $attributes Attributes to be returned
+     *      @type string $base_dn Base DN
+     * }
+     * @return array|string Array with data. If there is one result and one field the string value is returned
      * @throws InvalidArgumentException
      * @throws LdapException Error from LDAP
      * @throws NoHitsException No hits found
      * @throws MultipleHitsException Multiple hits when single was expected
      * @throws Exception
      */
-    function ldap_query($query, $options=array())
+    function ldap_query($query, $options=array('single_result' => true, 'subtree' => true, 'attributes' => array('dn')))
     {
         $options_default = array('single_result' => true, 'subtree' => true, 'attributes' => array('dn'));
         $options = array_merge($options_default, $options);
