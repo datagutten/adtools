@@ -302,19 +302,42 @@ class adtools
 		if($fields!==false && !is_array($fields))
 			throw new Exception("Fields must be array or false");
 
+		$options = array(
+		    'base_dn'=>$base_dn,
+            'single_result'=>true
+        );
+
+		if(!empty($fields))
+		    $options['attributes'] = $fields;
+
 		if($type=='user')
-			return $this->query("(&(displayName=$name)(objectClass=user))",$base_dn,($fields===false ? array('sAMAccountName'):$fields),true);
+        {
+            if(empty($options['attributes']))
+                $options['attributes'] = array('sAMAccountName');
+
+            return $this->ldap_query("(&(displayName=$name)(objectClass=user))", $options);
+        }
 		elseif($type=='upn')
-			return $this->query("(&(userPrincipalName=$name)(objectClass=user))",$base_dn,($fields===false ? array('userPrincipalName'):$fields),true);
+        {
+            if(empty($options['attributes']))
+                $options['attributes'] = array('userPrincipalName');
+            return $this->ldap_query("(&(userPrincipalName=$name)(objectClass=user))", $options);
+        }
 		elseif($type=='username')
-			return $this->query("(&(sAMAccountName=$name)(objectClass=user))",$base_dn,($fields===false ? array('sAMAccountName'):$fields),true);
+        {
+            if(empty($options['attributes']))
+                $options['attributes'] = array('sAMAccountName');
+            return $this->ldap_query("(&(sAMAccountName=$name)(objectClass=user))", $options);
+        }
 		elseif($type=='computer')
-			return $this->query("(&(name=$name)(objectClass=computer))",$base_dn,($fields===false ? array('name'):$fields),true);
+        {
+            if(empty($options['attributes']))
+                $options['attributes'] = array('name');
+            return $this->ldap_query("(&(name=$name)(objectClass=computer))",$options);
+        }
 		else
-			throw new Exception('Invalid type');
+			throw new InvalidArgumentException('Invalid type');
 	}
-
-
 
     /**
      * Create a HTML login form
