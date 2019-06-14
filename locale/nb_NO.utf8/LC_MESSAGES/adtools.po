@@ -1,0 +1,65 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: adtools\n"
+"POT-Creation-Date: 2018-01-23 08:40+0100\n"
+"PO-Revision-Date: 2018-01-23 08:40+0100\n"
+"Last-Translator: Anders Birkenes <datagutten@datagutten.net>\n"
+"Language-Team: \n"
+"Language: nb_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.5\n"
+"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: locale\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: adtools.class.php:31
+#, php-format
+msgid "Domain key %s not found in config file"
+msgstr "Domenet %s ble ikke funnet i konfigurasjonsfilen"
+
+#: adtools.class.php:38
+msgid "DC and/or domain must be specified in config file"
+msgstr "Domenekontroller og/eller domene må være spesifisert i konfigurasjonsfilen"
+
+#: adtools.class.php:60
+msgid "Invalid characters in username or password"
+msgstr "Ugyldige tegn i brukernavn eller passord"
+
+#: adtools.class.php:104
+msgid "Unable to connect"
+msgstr "Kan ikke koble til"
+
+#: adtools.class.php:119
+msgid "Invalid user name or password"
+msgstr "Ugyldig brukernavn eller passord"
+
+#: adtools.class.php:134
+#, php-format
+msgid "Search for %s returned false"
+msgstr "Søket etter %s returnerte feil"
+
+#: adtools.class.php:140 adtools.class.php:195
+#, php-format
+msgid "Multiple hits for %s"
+msgstr "Flere treff for %s"
+
+#: adtools.class.php:145 adtools.class.php:200
+#, php-format
+msgid "No hits for query %s in %s"
+msgstr "Ingen treff for søket %s i %s"
+
+#: adtools.class.php:163 adtools.class.php:212
+#, php-format
+msgid "Field %s is empty"
+msgstr "Feltet %s er tomt"
+
+#: adtools.class.php:224
+msgid "Username"
+msgstr "Brukernavn"
+
+#: adtools.class.php:228
+msgid "Password"
+msgstr "Passord"

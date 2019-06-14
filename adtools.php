@@ -14,7 +14,7 @@ class adtools
      * @var $config array Configuration loaded from config file
      */
     public $config=array();
-
+    public $locale_path;
     /**
      * adtools constructor.
      * @param string $domain domain key from config file to connect to
@@ -24,7 +24,8 @@ class adtools
 	{
 		if(!empty($domain))
 			$this->connect($domain);
-	}
+		set_locale('nb_NO.utf8', 'adtools');
+    }
 
     /**
      * Escape invalid characters in ldap query
