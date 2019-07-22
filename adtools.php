@@ -46,12 +46,12 @@ class adtools
 	{
 		$domains = require 'domains.php';
 		if(!isset($domains[$domain_key]))
-			throw new Exception(sprintf(_('Domain key %s not found in config file'),$domain_key));
+			throw new InvalidArgumentException(sprintf(_('Domain key %s not found in config file'),$domain_key));
 
 		$this->config=$domains[$domain_key];
 
 		if(!isset($this->config['dc']) && !isset($this->config['domain']))
-			throw new Exception(_('DC and/or domain must be specified in config file'));
+			throw new InvalidArgumentException(_('DC and/or domain must be specified in config file'));
 		elseif(!isset($this->config['dc']))
 			$this->config['dc']=$this->config['domain'];
 		elseif(!isset($this->config['domain']))
@@ -80,11 +80,11 @@ class adtools
 	{
 		//http://php.net/manual/en/function.ldap-bind.php#73718
 		if(empty($username) || empty($password))
-            throw new Exception(_('Username and/or password are not specified'));
+            throw new InvalidArgumentException(_('Username and/or password are not specified'));
 		if(preg_match('/[^a-zA-Z@\.\,\-0-9\=]/',$username) || preg_match('/[^a-zA-Z0-9\x20!@#$%^&*()+\-]/',$password))
-            throw new Exception(_('Invalid characters in username or password'));
+            throw new InvalidArgumentException(_('Invalid characters in username or password'));
 		if(!empty($port) && !is_numeric($port))
-			throw new Exception('Port number must be numeric');
+			throw new InvalidArgumentException('Port number must be numeric');
 
 
 		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
@@ -95,7 +95,7 @@ class adtools
 			if(isset($this->config['domain']))
 				$domain=$this->config['domain'];
 			else
-				throw new Exception('Domain not specified');
+				throw new InvalidArgumentException('Domain not specified');
 		}
 		if(empty($protocol))
         {
@@ -106,7 +106,7 @@ class adtools
         }
 
         if(!is_string($protocol) || ($protocol!='ldap' && $protocol!='ldaps'))
-            throw new Exception('Invalid protocol specified');
+            throw new InvalidArgumentException('Invalid protocol specified');
 
         //PHP/OpenLDAP will default to port 389 even if ldaps is specified
         if($protocol=='ldaps' && (empty($port) || !is_numeric($port)))
@@ -139,7 +139,7 @@ class adtools
 			if(ldap_errno($this->ad)===49)
                 throw new Exception(_('Invalid user name or password'));
 			else
-			    throw new Exception(ldap_error($this->ad));
+			    throw new LdapException($this->ad);
 		}
 	}
 
