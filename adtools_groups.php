@@ -79,4 +79,16 @@ class adtools_groups extends adtools
                 throw new Exception(sprintf('Unable to delete %s from %s',$user_dn,$group_dn));
 		}
 	}
+
+    /**
+     * @param $group_dn
+     * @return array|string
+     * @throws LdapException
+     * @throws MultipleHitsException
+     * @throws NoHitsException
+     */
+	function members($group_dn)
+    {
+        return $this->ldap_query(sprintf('(distinguishedName=%s)', $group_dn), array('attributes'=>array('member')))['member'];
+    }
 }
