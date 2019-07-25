@@ -1,4 +1,7 @@
 <?php
+namespace datagutten\adtools;
+use Exception;
+
 class adtools_groups extends adtools
 {
 	function __construct($domain)

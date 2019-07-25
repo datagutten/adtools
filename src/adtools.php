@@ -1,5 +1,8 @@
 <?php
-require 'LdapException.php';
+namespace datagutten\adtools;
+use Exception;
+use InvalidArgumentException;
+
 class adtools
 {
     /**

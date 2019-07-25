@@ -12,7 +12,9 @@
     "require": {"ext-ldap":  "*",
                 "ext-gettext":  "*"},
     "autoload": {
-        "classmap": ["src/adtools.php", "src/adtools_groups.php", "src/adtools_utils.php", "src/LdapException.php", "src/MultipleHitsException.php", "src/NoHitsException.php"],
+        "psr-4": {
+            "datagutten\\adtools\\": "src"
+        },
         "files": ["set_locale.php"]
     }
 }

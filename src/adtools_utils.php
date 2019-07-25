@@ -1,4 +1,6 @@
 <?php
+namespace datagutten\adtools;
+
 class adtools_utils
 {
     /**

@@ -5,6 +5,8 @@
  * Date: 29.04.2019
  * Time: 11:52
  */
+namespace datagutten\adtools;
+use Exception;
 
 class LdapException extends Exception
 {

@@ -6,6 +6,9 @@
  * Time: 18.09
  */
 
+namespace datagutten\adtools;
+use Exception;
+
 class NoHitsException extends Exception
 {
     public $query;
