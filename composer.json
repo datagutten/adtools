@@ -12,7 +12,7 @@
     "require": {"ext-ldap":  "*",
                 "ext-gettext":  "*"},
     "autoload": {
-        "classmap": ["adtools.php", "adtools_groups.php", "adtools_utils.php", "LdapException.php", "MultipleHitsException.php", "NoHitsException.php"],
+        "classmap": ["src/adtools.php", "src/adtools_groups.php", "src/adtools_utils.php", "src/LdapException.php", "src/MultipleHitsException.php", "src/NoHitsException.php"],
         "files": ["set_locale.php"]
     }
 }
