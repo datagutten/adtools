@@ -10,7 +10,8 @@
         }
     ],
     "require": {"ext-ldap":  "*",
-                "ext-gettext":  "*"},
+                "ext-gettext":  "*",
+        "phpunit/phpunit": "^8.2"},
     "autoload": {
         "psr-4": {
             "datagutten\\adtools\\": "src"
