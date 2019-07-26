@@ -10,12 +10,14 @@
         }
     ],
     "require": {"ext-ldap":  "*",
-                "ext-gettext":  "*",
-        "phpunit/phpunit": "^8.2"},
+                "ext-gettext":  "*"},
     "autoload": {
         "psr-4": {
             "datagutten\\adtools\\": "src"
         },
         "files": ["set_locale.php"]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0|^7.0|^8.0"
     }
 }
