@@ -10,6 +10,7 @@ matrix:
     - php: '7.0'
       env: COMPOSER_PHPUNIT=false
     - php: '7.1'
+      env: COMPOSER_PHPUNIT=false
     - php: '7.2'
     - php: '7.3'
     - php: '7.4snapshot'
@@ -33,7 +34,7 @@ install:
     fi
 
 before_script:
- - vendor/bin/phpunit --version
+ - if [ "$COMPOSER_PHPUNIT" == 'false' ]; then phpunit --version; else vendor/bin/phpunit --version; fi
  - mkdir /tmp/slapd
  - sudo killall /usr/sbin/slapd
  - sudo slapd -f tests/slapd/slapd_standard.conf &
