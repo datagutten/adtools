@@ -367,8 +367,9 @@ class adtools
 
     /**
      * Move an object to another OU
-     * @param $dn
-     * @param $newparent
+     * @param string $dn Object DN
+     * @param string $newparent New parent OU
+     * @return string New object DN
      * @throws LdapException
      */
 	function move($dn,$newparent)
@@ -377,6 +378,7 @@ class adtools
 		$result = ldap_rename($this->ad,$dn,$cn,$newparent,true);
 		if($result===false)
 		    throw new LdapException($this->ad);
+		return sprintf('%s,%s', $cn, $newparent);
 	}
 
     //-----------old---------------
