@@ -130,7 +130,7 @@ class adtools_utils
         $len = strlen($newPassword);
         $newPassw = "";
         for ($i = 0; $i < $len; $i++) {
-            $newPassw .= "{$newPassword{$i}}\000";
+            $newPassw .= "{$newPassword[$i]}\000";
         }
         return $newPassw;
     }

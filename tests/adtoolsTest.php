@@ -9,7 +9,6 @@
 namespace datagutten\adtools\tests;
 
 use datagutten\adtools\adtools;
-use datagutten\adtools\adtools_utils;
 use PHPUnit\Framework\TestCase;
 
 
@@ -27,12 +26,6 @@ class adtoolsTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         load_data::delete();
-    }
-
-    public function testLdap_query_escape()
-    {
-        $query = adtools_utils::ldap_query_escape('(foo=*)');
-        $this->assertEquals('\\28foo=\\2A\\29', $query);
     }
 
     public function __construct($name = null, array $data = [], $dataName = '')
