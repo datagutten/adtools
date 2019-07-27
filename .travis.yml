@@ -30,6 +30,7 @@ before_script:
  - if [ "$COMPOSER_PHPUNIT" == 'false' ]; then phpunit --version; else vendor/bin/phpunit --version; fi
  - mkdir /tmp/slapd
  - sudo killall /usr/sbin/slapd
+ - php tests/slapd/build_config.php
  - sudo slapd -f tests/slapd/slapd.conf &
 
 script:
