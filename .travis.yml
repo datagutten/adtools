@@ -32,6 +32,7 @@ before_script:
  - sudo killall /usr/sbin/slapd
  - php tests/slapd/build_config.php
  - sudo slapd -f tests/slapd/slapd.conf &
+ - sleep 3
 
 script:
  - if [ "$COMPOSER_PHPUNIT" == 'false' ]; then phpunit;
