@@ -1,3 +1,9 @@
 domains.php
 
 /vendor/
+slapd.conf
+.phpunit.result.cache
+clover.xml
+coverage_html
+.idea
+composer.lock

@@ -6,9 +6,12 @@
  * Time: 13:32
  */
 
+namespace datagutten\adtools\tests;
+
 use datagutten\adtools\adtools;
-use datagutten\adtools\LdapException;
+use datagutten\adtools\adtools_utils;
 use PHPUnit\Framework\TestCase;
+
 
 class adtoolsTest extends TestCase
 {
@@ -16,10 +19,19 @@ class adtoolsTest extends TestCase
      * @var adtools
      */
     public $adtools;
+    public static function setUpBeforeClass(): void
+    {
+        load_data::load_base_data();
+        load_data::load_test_data();
+    }
+    public static function tearDownAfterClass(): void
+    {
+        load_data::delete();
+    }
+
     public function testLdap_query_escape()
     {
-        $adtools=new adtools();
-        $query = $adtools->ldap_query_escape('(foo=*)');
+        $query = adtools_utils::ldap_query_escape('(foo=*)');
         $this->assertEquals('\\28foo=\\2A\\29', $query);
     }
 
@@ -48,17 +60,6 @@ class adtoolsTest extends TestCase
         $this->assertEquals('ou=adtools-test,ou=Test,dc=example,dc=com', $result['dn']);
     }
 
-    public function testMove()
-    {
-        $this->adtools->move('CN=user2,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'OU=move,OU=adtools-test,OU=Test,DC=example,DC=com');
-        $result = $this->adtools->ldap_query('(displayName=user2)', array('base_dn'=>'ou=Test,dc=example,dc=com'));
-        $this->assertEquals('cn=user2,ou=move,ou=adtools-test,ou=Test,dc=example,dc=com', $result['dn']);
-    }
-    public function testMoveAgain()
-    {
-        $this->expectException(LdapException::class);
-        $this->adtools->move('CN=user2,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'OU=move,OU=adtools-test,OU=Test,DC=example,DC=com');
-    }
 /*
     public function testQuery()
     {
@@ -70,12 +71,7 @@ class adtoolsTest extends TestCase
 
     }
 */
-    public function testChange_password()
-    {
-        $this->markTestSkipped();
-        $this->adtools->change_password('CN=user1,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'test2');
-        $this->adtools->change_password('CN=user1,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'test2', true);
-    }
+
 /*
     public function testLogin_form()
     {
