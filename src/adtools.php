@@ -1,5 +1,8 @@
 <?php
 namespace datagutten\adtools;
+use datagutten\adtools\exceptions\LdapException;
+use datagutten\adtools\exceptions\MultipleHitsException;
+use datagutten\adtools\exceptions\NoHitsException;
 use Exception;
 use InvalidArgumentException;
 

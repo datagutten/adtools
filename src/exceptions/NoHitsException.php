@@ -6,7 +6,7 @@
  * Time: 18.09
  */
 
-namespace datagutten\adtools;
+namespace datagutten\adtools\exceptions;
 use Exception;
 
 class NoHitsException extends Exception

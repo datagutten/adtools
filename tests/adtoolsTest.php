@@ -8,14 +8,15 @@
 
 namespace datagutten\adtools\tests;
 
-use datagutten\adtools\adtools;
+use datagutten\adtools;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 
 class adtoolsTest extends TestCase
 {
     /**
-     * @var adtools
+     * @var adtools\adtools
      */
     public $adtools;
     public static function setUpBeforeClass(): void
@@ -28,17 +29,19 @@ class adtoolsTest extends TestCase
         load_data::delete();
     }
 
-    public function __construct($name = null, array $data = [], $dataName = '')
+    /**
+     * @throws Exception
+     */
+    protected function setUp(): void
     {
-        parent::__construct($name, $data, $dataName);
-        $this->adtools=new adtools();
+        $this->adtools=new adtools\adtools();
         $this->adtools->connect_and_bind('localhost', 'cn=admin,dc=example,dc=com', 'test', 'ldap', '389', 'localhost');
     }
 
     public function testConnect()
     {
         set_include_path(__DIR__);
-        $adtools=new adtools('test');
+        $adtools=new adtools\adtools('test');
         $this->assertIsResource($adtools->ad);
     }
 
@@ -51,6 +54,12 @@ class adtoolsTest extends TestCase
     {
         $result = $this->adtools->ldap_query('(objectclass=*)', array('base_dn'=>'OU=Test,DC=example,DC=com', 'subtree'=>false));
         $this->assertEquals('ou=adtools-test,ou=Test,dc=example,dc=com', $result['dn']);
+    }
+
+    public function MultipleHitsException()
+    {
+        $this->expectException(adtools\exceptions\MultipleHitsException::class);
+        $this->adtools->ldap_query('(objectclass=user)', array('base_dn'=>'OU=Test,DC=example,DC=com', 'single_result'=>true));
     }
 
 /*

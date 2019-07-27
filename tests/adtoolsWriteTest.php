@@ -24,9 +24,9 @@ class adtoolsWriteTest extends TestCase
     }
 
     /**
-     * @throws adtools\LdapException
-     * @throws adtools\MultipleHitsException
-     * @throws adtools\NoHitsException
+     * @throws adtools\exceptions\LdapException
+     * @throws adtools\exceptions\MultipleHitsException
+     * @throws adtools\exceptions\NoHitsException
      */
     public function testMove()
     {
@@ -38,16 +38,16 @@ class adtoolsWriteTest extends TestCase
     }
 
     /**
-     * @throws adtools\LdapException
+     * @throws adtools\exceptions\LdapException
      */
     public function testMoveNonExisting()
     {
-        $this->expectException(adtools\LdapException::class);
+        $this->expectException(adtools\exceptions\LdapException::class);
         $this->adtools->move('CN=user3,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'OU=move,OU=adtools-test,OU=Test,DC=example,DC=com');
     }
 
     /**
-     * @throws adtools\LdapException
+     * @throws adtools\exceptions\LdapException
      */
     public function testChange_password()
     {
