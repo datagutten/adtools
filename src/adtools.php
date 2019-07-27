@@ -151,7 +151,6 @@ class adtools
      * @throws LdapException Error from LDAP
      * @throws NoHitsException No hits found
      * @throws MultipleHitsException Multiple hits when single was expected
-     * @throws Exception
      */
     function ldap_query($query, $options=array('single_result' => true, 'subtree' => true, 'attributes' => array('dn')))
     {
@@ -159,7 +158,7 @@ class adtools
         $options = array_merge($options_default, $options);
 
         if(!is_resource($this->ad))
-            throw new Exception('Not connected to AD');
+            throw new InvalidArgumentException('Not connected to AD');
         if(empty($options['base_dn']))
         {
             if(!empty($this->config['dn']))
@@ -180,7 +179,6 @@ class adtools
 
         if($entries['count']==0)
         {
-            //$this->error=sprintf(_('No hits for query %s in %s'),$query,$options['base_dn']);
             throw new NoHitsException($query);
         }
         if($options['single_result']===true)
@@ -200,7 +198,7 @@ class adtools
                 }
                 else
                 {
-                    throw new Exception(sprintf(_('Field %s is empty'),$field));
+                    throw new InvalidArgumentException(sprintf(_('Field %s is empty'),$field));
                 }
             }
             else
@@ -294,7 +292,7 @@ class adtools
 			$base_dn=$this->config['dn'];
 
 		if($fields!==false && !is_array($fields))
-			throw new Exception("Fields must be array or false");
+			throw new InvalidArgumentException("Fields must be array or false");
 
 		$options = array(
 		    'base_dn'=>$base_dn,
