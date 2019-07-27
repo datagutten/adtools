@@ -59,20 +59,19 @@ class adtools
 			$this->config['port']=null;
 
 		if(isset($this->config['username']) && isset($this->config['password']))
-			$this->connect_and_bind($this->config['domain'],$this->config['username'],$this->config['password'],$this->config['protocol'],$this->config['port'],$this->config['dc']);
+			$this->connect_and_bind($this->config['username'],$this->config['password'],$this->config['dc'], $this->config['protocol'],$this->config['port']);
 	}
 
     /**
      * Connect and bind using specified credentials
-     * @param string $domain
-     * @param $username
-     * @param $password
+     * @param string $username
+     * @param string $password
+     * @param string $dc
      * @param string $protocol Set to ldap, ldaps or leave blank to use config file
      * @param int $port
-     * @param string $dc
      * @throws Exception
      */
-    function connect_and_bind($domain=null, $username, $password, $protocol=null, $port=null, $dc=null)
+    function connect_and_bind($username, $password, $dc=null, $protocol=null, $port=null)
 	{
 		//http://php.net/manual/en/function.ldap-bind.php#73718
 		if(empty($username) || empty($password))
@@ -85,14 +84,7 @@ class adtools
 
 		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
 		//http://serverfault.com/questions/136888/ssl-certifcate-request-s2003-dc-ca-dns-name-not-avaiable/705724#705724
-		//print_r(array($domain,$username,$password));
-		if(empty($domain))
-		{
-			if(isset($this->config['domain']))
-				$domain=$this->config['domain'];
-			else
-				throw new InvalidArgumentException('Domain not specified');
-		}
+
 		if(empty($protocol))
         {
             if(!empty($this->config['protocol'])) //Use value from config file
@@ -113,7 +105,7 @@ class adtools
 			if(isset($this->config['dc']))
 				$dc=$this->config['dc'];
 			else
-				$dc=$domain;
+				throw new InvalidArgumentException('DC not specified and not set in config');
 		}
 
 		$url=sprintf('%s://%s',$protocol,$dc);

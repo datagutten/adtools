@@ -35,7 +35,7 @@ class adtoolsTest extends TestCase
     protected function setUp(): void
     {
         $this->adtools=new adtools\adtools();
-        $this->adtools->connect_and_bind('localhost', 'cn=admin,dc=example,dc=com', 'test', 'ldap', '389', 'localhost');
+        $this->adtools->connect_and_bind('cn=admin,dc=example,dc=com', 'test', 'localhost');
     }
 
     public function testConnect()
