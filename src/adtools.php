@@ -381,18 +381,6 @@ class adtools
 		return sprintf('%s,%s', $cn, $newparent);
 	}
 
-    //-----------old---------------
-
-    function extract_field($objects,$field)
-	{
-	    $extract = array();
-		foreach($objects as $key=>$object)
-		{
-			$extract[$key]=$object[$field][0];
-		}
-		return $extract;
-	}
-
     /**
      * Reset password for user
      * @param string $dn User DN

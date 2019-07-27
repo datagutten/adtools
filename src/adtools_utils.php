@@ -194,4 +194,13 @@ class adtools_utils
         return $flags_output;
     }
 
+    public static function extract_field($objects, $field)
+    {
+        $extract = array();
+        foreach ($objects as $key => $object) {
+            $extract[$key] = $object[$field][0];
+        }
+        return $extract;
+    }
+
 }
