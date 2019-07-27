@@ -31,16 +31,6 @@ class adtools
     }
 
     /**
-     * Escape invalid characters in ldap query
-     * @param $string string Query string to escape
-     * @return mixed
-     */
-    function ldap_query_escape($string)
-	{
-		return str_replace(array('\\','*','(',')',),array('\\00','\\2A','\\28','\\29'),$string);
-	}
-
-    /**
      * Connect and bind using config file
      * @param $domain_key
      * @throws Exception

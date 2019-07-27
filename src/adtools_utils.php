@@ -203,4 +203,14 @@ class adtools_utils
         return $extract;
     }
 
+    /**
+     * Escape invalid characters in ldap query
+     * @param $string string Query string to escape
+     * @return mixed
+     */
+    public static function ldap_query_escape($string)
+    {
+        return str_replace(array('\\', '*', '(', ')',), array('\\00', '\\2A', '\\28', '\\29'), $string);
+    }
+
 }
