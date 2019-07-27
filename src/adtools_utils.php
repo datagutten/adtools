@@ -1,6 +1,8 @@
 <?php
 namespace datagutten\adtools;
 
+use InvalidArgumentException;
+
 class adtools_utils
 {
     /**
@@ -24,11 +26,11 @@ class adtools_utils
     }
 
     /**
-     * Replace LDAP field names with readable names
-     * @param string $field LDAP field name
+     * Replace the LDAP field key with a human friendly name
+     * @param string $field LDAP field key
      * @return string Human friendly field name
      */
-    public static function field_names($field)
+    public static function field_name($field)
     {
         $replacements = array('givenName' => _('First Name'),
             'sn' => _('Last Name'),
@@ -72,11 +74,10 @@ class adtools_utils
             'st' => _('State/Province'));
 
         foreach ($replacements as $find => $replace) {
-            $field = str_replace(strtolower($find), $replace, strtolower($field), $count);
-            if ($count > 0)
-                return $field;
+            if($find===$field)
+                return $replace;
         }
-        return $field;
+        throw new InvalidArgumentException('Invalid field name: '.$field);
     }
 
     /**
