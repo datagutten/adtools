@@ -10,7 +10,9 @@
         }
     ],
     "require": {"ext-ldap":  "*",
-                "ext-gettext":  "*"},
+                "ext-gettext":  "*",
+                "php": ">=7.1"
+    },
     "autoload": {
         "psr-4": {
             "datagutten\\adtools\\": "src",
@@ -19,7 +21,7 @@
         "files": ["set_locale.php"]
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0|^7.0|^8.0",
+        "phpunit/phpunit": "^7.0|^8.0",
         "symfony/process": "^4.3",
         "symfony/filesystem": "^4.3"
     }
