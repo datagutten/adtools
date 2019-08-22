@@ -195,7 +195,7 @@ class adtools
             if($entries['count']>1)
                 throw new MultipleHitsException($query);
 
-            if($options['attributes']==1)
+            if(count($options['attributes'])==1)
             {
                 $field=strtolower($options['attributes'][0]);
                 if(!empty($entries[0][$field]))
