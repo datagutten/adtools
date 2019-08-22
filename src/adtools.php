@@ -161,6 +161,8 @@ class adtools
             else
                 throw new InvalidArgumentException('Base DN empty and not set in config');
         }
+        if(!is_array($options['attributes']))
+            throw new InvalidArgumentException('attributes must be array');
 
         if($options['subtree'])
             $result=ldap_search($this->ad,$options['base_dn'],$query,$options['attributes']);
