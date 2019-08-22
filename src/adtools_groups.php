@@ -87,14 +87,36 @@ class adtools_groups extends adtools
 	}
 
     /**
+     * Get members of a group
      * @param $group_dn
-     * @return array|string
+     * @return array Array with member DNs
      * @throws LdapException
      * @throws MultipleHitsException
      * @throws NoHitsException
      */
 	function members($group_dn)
     {
-        return $this->ldap_query(sprintf('(distinguishedName=%s)', $group_dn), array('attributes'=>array('member')))['member'];
+        $members = $this->ldap_query(sprintf('(distinguishedName=%s)', $group_dn), array('attributes'=>array('member'), 'single_result'=>false));
+        $members = $members[0]['member'];
+        unset($members['count']);
+        return $members;
+    }
+
+    /**
+     * Check if a user is member of a group
+     * @param string $group_dn
+     * @param string $user_dn
+     * @return bool
+     * @throws LdapException
+     * @throws MultipleHitsException
+     * @throws NoHitsException
+     */
+    function has_member($group_dn, $user_dn)
+    {
+        $members = $this->members($group_dn);
+        if(array_search($user_dn, $members)===false)
+            return false;
+        else
+            return true;
     }
 }
