@@ -1,10 +1,10 @@
 <?php
 
-namespace datagutten\adtools\tests;
+namespace storfollo\adtools\tests;
 
-use datagutten\adtools\adtools_utils;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use storfollo\adtools\adtools_utils;
 
 class adtools_utilsTest extends TestCase
 {

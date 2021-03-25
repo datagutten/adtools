@@ -1,8 +1,8 @@
 <?php
-namespace datagutten\adtools\tests;
+namespace storfollo\adtools\tests;
 
-use datagutten\adtools;
 use PHPUnit\Framework\TestCase;
+use storfollo\adtools;
 
 
 class adtoolsWriteTest extends TestCase

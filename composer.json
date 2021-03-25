@@ -1,12 +1,12 @@
 {
-    "name": "datagutten/adtools",
+    "name": "storfollo/adtools",
     "description": "Tools for working with Active Directory from PHP",
     "type": "library",
     "license": "GPL-3.0-or-later",
     "authors": [
         {
-            "name": "datagutten",
-            "email": "datagutten@datagutten.net"
+            "name": "Anders Birkenes",
+            "email": "anders.birkenes@storfolloikt.no"
         }
     ],
     "require": {"ext-ldap":  "*",
@@ -15,8 +15,8 @@
     },
     "autoload": {
         "psr-4": {
-            "datagutten\\adtools\\": "src",
-            "datagutten\\adtools\\tests\\": "tests"
+            "storfollo\\adtools\\": "src",
+            "storfollo\\adtools\\tests\\": "tests"
         },
         "files": ["set_locale.php"]
     },

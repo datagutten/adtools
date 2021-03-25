@@ -1,5 +1,5 @@
 <?php
-namespace datagutten\adtools;
+namespace storfollo\adtools;
 
 use InvalidArgumentException;
 

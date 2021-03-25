@@ -1,9 +1,9 @@
 <?php
 
-namespace datagutten\adtools\tests;
+namespace storfollo\adtools\tests;
 
-use datagutten\adtools;
 use PHPUnit\Framework\TestCase;
+use storfollo\adtools;
 
 class adtools_groupsTest extends TestCase
 {

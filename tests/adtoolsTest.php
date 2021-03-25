@@ -6,12 +6,12 @@
  * Time: 13:32
  */
 
-namespace datagutten\adtools\tests;
+namespace storfollo\adtools\tests;
 
-use datagutten\adtools;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use storfollo\adtools;
 
 
 class adtoolsTest extends TestCase

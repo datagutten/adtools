@@ -1,6 +1,6 @@
 <?php
 
-namespace datagutten\adtools\tests;
+namespace storfollo\adtools\tests;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 

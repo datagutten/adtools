@@ -6,7 +6,7 @@
  * Time: 18.09
  */
 
-namespace datagutten\adtools\exceptions;
+namespace storfollo\adtools\exceptions;
 use Exception;
 
 class MultipleHitsException extends Exception

@@ -1,9 +1,9 @@
 <?php
-namespace datagutten\adtools;
-use datagutten\adtools\exceptions\LdapException;
-use datagutten\adtools\exceptions\MultipleHitsException;
-use datagutten\adtools\exceptions\NoHitsException;
+namespace storfollo\adtools;
 use Exception;
+use storfollo\adtools\exceptions\LdapException;
+use storfollo\adtools\exceptions\MultipleHitsException;
+use storfollo\adtools\exceptions\NoHitsException;
 
 class adtools_groups extends adtools
 {
