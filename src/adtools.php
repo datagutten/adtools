@@ -13,14 +13,9 @@ class adtools
      */
     public $ad;
     /**
-     * @var $error string Error message
-     */
-	public $error;
-    /**
      * @var $config array Configuration loaded from config file
      */
     public $config=array();
-    public $locale_path;
     /**
      * adtools constructor.
      * @param string $domain domain key from config file to connect to
