@@ -49,7 +49,8 @@ class adtools
         if (!isset($config['dc']))
             throw new InvalidArgumentException(_('DC must be specified in config file'));
         $this->config = $config;
-        $this->connect_and_bind($config['username'], $config['password'], $config['dc'], $config['protocol'], $config['port']);
+        if (isset($config['username']) && isset($config['password']))
+            $this->connect_and_bind($config['username'], $config['password'], $config['dc'], $config['protocol'], $config['port']);
     }
 
     /**
