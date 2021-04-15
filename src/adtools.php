@@ -65,7 +65,7 @@ class adtools
             throw new InvalidArgumentException(_('DC must be specified in config file'));
         $config = array_merge(['protocol'=>'ldap', 'port'=>389], $config);
 
-        $adtools = new self();
+        $adtools = new static();
         $adtools->config = $config;
 
         if (isset($config['username']) && isset($config['password']))
