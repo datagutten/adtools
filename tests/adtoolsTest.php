@@ -20,6 +20,11 @@ class adtoolsTest extends TestCase
      * @var adtools\adtools
      */
     public $adtools;
+    /**
+     * @var array
+     */
+    private $config;
+
     public static function setUpBeforeClass(): void
     {
         load_data::load_base_data();
@@ -37,32 +42,20 @@ class adtoolsTest extends TestCase
     {
         $this->adtools=new adtools\adtools();
         $this->adtools->connect_and_bind('cn=admin,dc=example,dc=com', 'test', 'localhost');
+        $this->config = require __DIR__.'/domains.php';
     }
 
     public function testConnect()
     {
         set_include_path(__DIR__);
-        $adtools=new adtools\adtools('test');
+        $adtools = adtools\adtools::connect_config($this->config['test']);
         $this->assertIsResource($adtools->ad);
-    }
-
-    public function testConnectInvalidFile()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Domain key invalid not found in config file');
-        new adtools\adtools('invalid');
     }
 
     public function testInvalidConfig()
     {
         $this->expectExceptionMessage('DC must be specified in config file');
-        new adtools\adtools('missing_dc');
-    }
-
-    public function testConfig()
-    {
-        $adtools=new adtools\adtools('no_dc');
-        $this->assertEquals('localhost', $adtools->config['dc']);
+        adtools\adtools::connect_config($this->config['missing_dc']);
     }
 
     public function testConnect_and_bind_no_username()
@@ -70,7 +63,7 @@ class adtoolsTest extends TestCase
         $adtools=new adtools\adtools();
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Username and/or password are not specified');
-        $adtools->connect_and_bind(null, null);
+        $adtools->connect_and_bind('', '');
     }
 
     public function testConnect_and_bind_invalid_chars()

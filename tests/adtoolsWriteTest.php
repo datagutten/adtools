@@ -18,8 +18,8 @@ class adtoolsWriteTest extends TestCase
 
     public function setUp(): void
     {
-        set_include_path(__DIR__);
-        $this->adtools=new adtools\adtools('test');
+        $config = require __DIR__.'/domains.php';
+        $this->adtools=adtools\adtools::connect_config($config['test']);
         load_data::load_test_data();
     }
 

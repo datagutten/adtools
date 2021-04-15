@@ -18,8 +18,8 @@ class adtools_groupsTest extends TestCase
 
     public function setUp(): void
     {
-        set_include_path(__DIR__);
-        $this->adtools=new adtools\adtools_groups('test');
+        $config = require __DIR__.'/domains.php';
+        $this->adtools = adtools\adtools_groups::connect_config($config['test']);
         load_data::load_test_data();
         load_data::load_group_test_data();
     }
