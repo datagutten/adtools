@@ -6,38 +6,39 @@ matrix:
     - php: '7.1'
     - php: '7.2'
     - php: '7.3'
-    - php: '7.4snapshot'
+    - php: '7.4'
+    - php: '8.0'
     - php: 'nightly'
-      env: IGNORE_PLATFORM_REQS=true
   allow_failures:
-    - php: '7.4snapshot'
     - php: 'nightly'
 
 addons:
- apt:
-  packages:
-   - ldap-utils
-   - slapd
-   # - php-ldap
+  apt:
+    packages:
+      - ldap-utils
+      - slapd
+
+env:
+  global:
+    - XDEBUG_MODE=coverage
+
+cache:
+  directories:
+    - $HOME/.cache/composer/files
 
 install:
-  - if [ "$COMPOSER_PHPUNIT" == 'false' ]; then composer remove phpunit/phpunit --dev; fi
-  - if [ "$IGNORE_PLATFORM_REQS" == 'true' ]; then composer install --no-interaction --ignore-platform-reqs;
-    else composer install --no-interaction;
-    fi
+  - composer install --no-interaction
 
 before_script:
- - if [ "$COMPOSER_PHPUNIT" == 'false' ]; then phpunit --version; else vendor/bin/phpunit --version; fi
- - mkdir /tmp/slapd
- - sudo killall /usr/sbin/slapd
- - php tests/slapd/build_config.php
- - sudo slapd -f tests/slapd/slapd.conf &
- - sleep 3
+  - vendor/bin/phpunit --version
+  - mkdir /tmp/slapd
+  - sudo killall /usr/sbin/slapd
+  - php tests/slapd/build_config.php
+  - sudo slapd -f tests/slapd/slapd.conf &
+  - sleep 3
 
 script:
- - if [ "$COMPOSER_PHPUNIT" == 'false' ]; then phpunit;
-   else vendor/bin/phpunit;
-   fi
+  - vendor/bin/phpunit
 
 after_script:
   - bash <(curl -s https://codecov.io/bash)
