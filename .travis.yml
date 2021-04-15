@@ -9,6 +9,10 @@ matrix:
     - php: '7.4'
     - php: '8.0'
     - php: 'nightly'
+    -  php: '7.4'
+       name: 'Prefer lowest'
+       install:
+         - composer update --prefer-lowest
   allow_failures:
     - php: 'nightly'
 
