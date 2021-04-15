@@ -55,7 +55,7 @@ class adtoolsTest extends TestCase
 
     public function testInvalidConfig()
     {
-        $this->expectExceptionMessage('DC and/or domain must be specified in config file');
+        $this->expectExceptionMessage('DC must be specified in config file');
         new adtools\adtools('missing_dc');
     }
 
