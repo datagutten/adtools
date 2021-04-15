@@ -41,7 +41,10 @@ class adtools
         if (!isset($domains[$domain_key]))
             throw new InvalidArgumentException(sprintf(_('Domain key %s not found in config file'), $domain_key));
 
-        $this->connect_config($domains[$domain_key]);
+        $config = $domains[$domain_key];
+        if (!isset($config['dc']))
+            throw new InvalidArgumentException(_('DC must be specified in config file'));
+        $this->connect_and_bind($config['username'], $config['password'], $config['dc'], $config['protocol'], $config['port']);
     }
 
     /**
@@ -52,17 +55,9 @@ class adtools
      */
     public static function connect_config(array $config): adtools
     {
-        if (!isset($config['dc']) && !isset($config['domain']))
-            throw new InvalidArgumentException(_('DC and/or domain must be specified in config file'));
-        elseif (!isset($config['dc']))
-            $config['dc'] = $config['domain'];
-        elseif (!isset($config['domain']))
-            $config['domain'] = $config['dc'];
-        //Use default values if options not set
-        if (!isset($config['protocol']))
-            $config['protocol'] = null;
-        if (!isset($config['port']))
-            $config['port'] = null;
+        if (!isset($config['dc']))
+            throw new InvalidArgumentException(_('DC must be specified in config file'));
+        $config = array_merge(['protocol'=>'ldap', 'port'=>389], $config);
 
         $adtools = new self();
         $adtools->config = $config;
@@ -81,7 +76,7 @@ class adtools
      * @param int $port
      * @throws Exception
      */
-    function connect_and_bind($username, $password, $dc=null, $protocol=null, $port=null)
+    function connect_and_bind($username, $password, $dc=null, $protocol='ldap', $port=null)
 	{
 		//http://php.net/manual/en/function.ldap-bind.php#73718
 		if(empty($username) || empty($password))
@@ -94,14 +89,6 @@ class adtools
 
 		//https://github.com/adldap/adLDAP/wiki/LDAP-over-SSL
 		//http://serverfault.com/questions/136888/ssl-certifcate-request-s2003-dc-ca-dns-name-not-avaiable/705724#705724
-
-		if(empty($protocol))
-        {
-            if(!empty($this->config['protocol'])) //Use value from config file
-                $protocol = $this->config['protocol'];
-            else
-                $protocol = 'ldap';
-        }
 
         if(!is_string($protocol) || ($protocol!='ldap' && $protocol!='ldaps'))
             throw new InvalidArgumentException('Invalid protocol specified');
