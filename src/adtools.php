@@ -42,6 +42,10 @@ class adtools
             throw new InvalidArgumentException(sprintf(_('Domain key %s not found in config file'), $domain_key));
 
         $config = $domains[$domain_key];
+        if(!isset($config['dc']) && isset($config['domain']))
+            $config['dc'] = $config['domain'];
+        $config = array_merge(['protocol'=>'ldap', 'port'=>389], $config);
+
         if (!isset($config['dc']))
             throw new InvalidArgumentException(_('DC must be specified in config file'));
         $this->connect_and_bind($config['username'], $config['password'], $config['dc'], $config['protocol'], $config['port']);
