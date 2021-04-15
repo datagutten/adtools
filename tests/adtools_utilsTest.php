@@ -66,8 +66,8 @@ class adtools_utilsTest extends TestCase
         adtools_utils::field_name('invalid');
     }
 
-    public function testExtract_field()
+/*    public function testExtract_field()
     {
         //$data = ['results'=>['field1'=>]]
-    }
+    }*/
 }

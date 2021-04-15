@@ -63,8 +63,6 @@ class adtoolsTest extends TestCase
     {
         $adtools=new adtools\adtools('no_dc');
         $this->assertEquals('localhost', $adtools->config['dc']);
-        $adtools=new adtools\adtools('no_domain');
-        $this->assertEquals('localhost', $adtools->config['domain']);
     }
 
     public function testConnect_and_bind_no_username()
