@@ -20,6 +20,7 @@ class adtools
      * adtools constructor.
      * @param string $domain domain key from config file to connect to
      * @throws Exception
+     * @deprecated Config should be handled outside class and passed to connect_config
      */
     function __construct($domain=null)
 	{
@@ -30,32 +31,46 @@ class adtools
 
     /**
      * Connect and bind using config file
-     * @param $domain_key
+     * @param string $domain_key
+     * @throws Exception
+     * @deprecated Config should be handled outside class and passed to connect_config
+     */
+    function connect(string $domain_key)
+    {
+        $domains = require 'domains.php';
+        if (!isset($domains[$domain_key]))
+            throw new InvalidArgumentException(sprintf(_('Domain key %s not found in config file'), $domain_key));
+
+        $this->connect_config($domains[$domain_key]);
+    }
+
+    /**
+     * Connect and bind using an array of configuration parameters
+     * @param array $config Configuration parameters
+     * @return adtools
      * @throws Exception
      */
-    function connect($domain_key)
-	{
-		$domains = require 'domains.php';
-		if(!isset($domains[$domain_key]))
-			throw new InvalidArgumentException(sprintf(_('Domain key %s not found in config file'),$domain_key));
+    public static function connect_config(array $config): adtools
+    {
+        if (!isset($config['dc']) && !isset($config['domain']))
+            throw new InvalidArgumentException(_('DC and/or domain must be specified in config file'));
+        elseif (!isset($config['dc']))
+            $config['dc'] = $config['domain'];
+        elseif (!isset($config['domain']))
+            $config['domain'] = $config['dc'];
+        //Use default values if options not set
+        if (!isset($config['protocol']))
+            $config['protocol'] = null;
+        if (!isset($config['port']))
+            $config['port'] = null;
 
-		$this->config=$domains[$domain_key];
+        $adtools = new self();
+        $adtools->config = $config;
 
-		if(!isset($this->config['dc']) && !isset($this->config['domain']))
-			throw new InvalidArgumentException(_('DC and/or domain must be specified in config file'));
-		elseif(!isset($this->config['dc']))
-			$this->config['dc']=$this->config['domain'];
-		elseif(!isset($this->config['domain']))
-			$this->config['domain']=$this->config['dc'];
-		//Use default values if options not set
-		if(!isset($this->config['protocol']))
-			$this->config['protocol']=null;
-		if(!isset($this->config['port']))
-			$this->config['port']=null;
-
-		if(isset($this->config['username']) && isset($this->config['password']))
-			$this->connect_and_bind($this->config['username'],$this->config['password'],$this->config['dc'], $this->config['protocol'],$this->config['port']);
-	}
+        if (isset($config['username']) && isset($config['password']))
+            $adtools->connect_and_bind($config['username'], $config['password'], $config['dc'], $config['protocol'], $config['port']);
+        return $adtools;
+    }
 
     /**
      * Connect and bind using specified credentials

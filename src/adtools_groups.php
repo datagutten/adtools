@@ -7,11 +7,6 @@ use storfollo\adtools\exceptions\NoHitsException;
 
 class adtools_groups extends adtools
 {
-	function __construct($domain)
-	{
-		parent::__construct($domain);
-	}
-
     /**
      * Create a group
      * @param string $object_name
