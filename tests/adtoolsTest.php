@@ -45,13 +45,6 @@ class adtoolsTest extends TestCase
         $this->config = require __DIR__.'/domains.php';
     }
 
-    public function testConnect()
-    {
-        set_include_path(__DIR__);
-        $adtools = adtools\adtools::connect_config($this->config['test']);
-        $this->assertIsResource($adtools->ad);
-    }
-
     public function testInvalidConfig()
     {
         $this->expectExceptionMessage('DC must be specified in config file');
@@ -63,7 +56,7 @@ class adtoolsTest extends TestCase
         $adtools=new adtools\adtools();
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Username and/or password are not specified');
-        $adtools->connect_and_bind('', '');
+        $adtools->connect_and_bind('', '', '');
     }
 
     public function testConnect_and_bind_invalid_chars()
@@ -71,17 +64,8 @@ class adtoolsTest extends TestCase
         $adtools=new adtools\adtools();
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid characters in username or password');
-        $adtools->connect_and_bind('u$er', 'æøå');
+        $adtools->connect_and_bind('u$er', 'æøå', 'localhost');
     }
-
-    public function testConnect_and_bind_invalid_port()
-    {
-        $adtools=new adtools\adtools();
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Port number must be numeric');
-        $adtools->connect_and_bind('user', 'password', null, null, 'asdf');
-    }
-
 
     public function testLdap_query()
     {
@@ -99,14 +83,6 @@ class adtoolsTest extends TestCase
     {
         $this->expectException(adtools\exceptions\NoHitsException::class);
         $this->adtools->ldap_query('(objectclass=foo)', array('base_dn'=>'OU=Test,DC=example,DC=com'));
-    }
-
-    public function testNotConnected()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Not connected to AD');
-        $adtools=new adtools\adtools();
-        $adtools->ldap_query('');
     }
 
 /*

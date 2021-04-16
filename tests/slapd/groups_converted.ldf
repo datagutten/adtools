@@ -54,3 +54,24 @@ userAccountControl: 512
 userPrincipalName: user3@upn.local
 whenChanged: 20190726121529.0Z
 whenCreated: 20190726121526.0Z
+
+dn: CN=group2,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com
+changetype: add
+cn: group
+dSCorePropagationData: 16010101000000.0Z
+distinguishedName: CN=group2,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com
+groupType: -2147483646
+instanceType: 4
+member: CN=user3,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com
+name: group
+objectCategory: CN=Group,CN=Schema,CN=Configuration,DC=example,DC=com
+objectClass: mstop
+objectClass: customActiveDirectoryGroup
+objectGUID:: zwi9DuJE40atp93CK8rreg==
+objectSid:: AQUAAAAAAAUVAAAAk+NiSD+tFGJDFwoyoj0AAA==
+sAMAccountName: group
+sAMAccountType: 268435456
+uSNChanged: 66416868
+uSNCreated: 66416848
+whenChanged: 20190823090456.0Z
+whenCreated: 20190823090438.0Z

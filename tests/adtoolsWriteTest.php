@@ -3,6 +3,7 @@ namespace storfollo\adtools\tests;
 
 use PHPUnit\Framework\TestCase;
 use storfollo\adtools;
+use Symfony\Component\Ldap\Exception\LdapException;
 
 
 class adtoolsWriteTest extends TestCase
@@ -30,20 +31,18 @@ class adtoolsWriteTest extends TestCase
      */
     public function testMove()
     {
-        $new = $this->adtools->move('CN=user2,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'OU=move,OU=adtools-test,OU=Test,DC=example,DC=com');
+        $user = $this->adtools->user('CN=user2,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com');
+        $new = $user->move('OU=move,OU=adtools-test,OU=Test,DC=example,DC=com');
         $this->assertEquals('CN=user2,OU=move,OU=adtools-test,OU=Test,DC=example,DC=com', $new);
         $result = $this->adtools->ldap_query('(displayName=user2)', array('base_dn'=>'ou=Test,dc=example,dc=com'));
         $this->assertEquals('cn=user2,ou=move,ou=adtools-test,ou=Test,dc=example,dc=com', $result);
-        ldap_delete($this->adtools->ad, $new);
     }
 
-    /**
-     * @throws adtools\exceptions\LdapException
-     */
     public function testMoveNonExisting()
     {
-        $this->expectException(adtools\exceptions\LdapException::class);
-        $this->adtools->move('CN=user3,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'OU=move,OU=adtools-test,OU=Test,DC=example,DC=com');
+        $this->expectException(LdapException::class);
+        $user = $this->adtools->user('CN=user3,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com');
+        $user->move('OU=move,OU=adtools-test,OU=Test,DC=example,DC=com');
     }
 
     /**
@@ -51,8 +50,9 @@ class adtoolsWriteTest extends TestCase
      */
     public function testChange_password()
     {
-        $this->adtools->change_password('CN=user1,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'test2');
-        $this->adtools->change_password('CN=user1 ,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com', 'test2', true);
+        $user = $this->adtools->user('CN=user1,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com');
+        $user->change_password('test2');
+        $user->change_password( 'test2', true);
         $result = $this->adtools->find_object('user1', 'OU=adtools-test,OU=Test,DC=example,DC=com','user', array('pwdLastSet'));
         $this->assertEquals('0', $result);
     }

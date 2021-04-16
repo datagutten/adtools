@@ -1,28 +1,32 @@
 {
-    "name": "storfollo/adtools",
-    "description": "Tools for working with Active Directory from PHP",
-    "type": "library",
-    "license": "GPL-3.0-or-later",
-    "authors": [
-        {
-            "name": "Anders Birkenes",
-            "email": "anders.birkenes@storfolloikt.no"
-        }
-    ],
-    "require": {"ext-ldap":  "*",
-                "ext-gettext":  "*",
-                "php": ">=7.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "storfollo\\adtools\\": "src",
-            "storfollo\\adtools\\tests\\": "tests"
-        },
-        "files": ["set_locale.php"]
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^8.0|^9",
-        "symfony/process": "^4.3",
-        "symfony/filesystem": "^4.3"
+  "name": "storfollo/adtools",
+  "description": "Tools for working with Active Directory from PHP",
+  "type": "library",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Anders Birkenes",
+      "email": "anders.birkenes@storfolloikt.no"
     }
+  ],
+  "require": {
+    "ext-ldap": "*",
+    "ext-gettext": "*",
+    "php": ">=7.1",
+    "symfony/ldap": "^5.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "storfollo\\adtools\\": "src",
+      "storfollo\\adtools\\tests\\": "tests"
+    },
+    "files": [
+      "set_locale.php"
+    ]
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0|^9",
+    "symfony/process": "^4.3",
+    "symfony/filesystem": "^4.3"
+  }
 }
