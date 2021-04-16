@@ -9,7 +9,7 @@
 namespace storfollo\adtools\exceptions;
 use Exception;
 
-class MultipleHitsException extends Exception
+class MultipleHitsException extends AdToolsException
 {
     public $query;
     public function __construct($query, $code = 0, Exception $previous = null) {
