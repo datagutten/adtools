@@ -13,9 +13,13 @@ class adtools_groupsTest extends TestCase
      */
     public $adtools;
 
-    public function setUp(): void
+    public static function setUpBeforeClass(): void
     {
         load_data::load_base_data();
+    }
+
+    public function setUp(): void
+    {
         $config = require __DIR__.'/domains.php';
         $this->adtools = adtools\adtools::connect_config($config['test']);
         try
