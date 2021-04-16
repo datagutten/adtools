@@ -14,6 +14,7 @@ class GroupTest extends TestCase
 
     protected function setUp(): void
     {
+        load_data::load_base_data();
         $config = require __DIR__ . '/domains.php';
         $this->adtools = adtools\adtools::connect_config($config['test']);
         load_data::load_test_data();
