@@ -1,11 +1,9 @@
 <?php
 namespace storfollo\adtools;
-use Exception;
 use InvalidArgumentException;
 use storfollo\adtools\exceptions\MultipleHitsException;
 use storfollo\adtools\exceptions\NoHitsException;
-use Symfony\Component\Ldap\Adapter\QueryInterface;
-use Symfony\Component\Ldap\Ldap;
+use Symfony\Component\Ldap;
 
 class adtools
 {
@@ -14,7 +12,7 @@ class adtools
      */
     public $config=array();
     /**
-     * @var Ldap
+     * @var Ldap\Ldap
      */
     public $ldap;
     /**
@@ -74,7 +72,7 @@ class adtools
 		if(!empty($port))
 			$url.=':'.$port;
 
-        $this->ldap = Ldap::create('ext_ldap', ['connection_string' => $url]);
+        $this->ldap = Ldap\Ldap::create('ext_ldap', ['connection_string' => $url]);
         $this->ldap->bind($username, $password);
 	}
 
@@ -108,9 +106,9 @@ class adtools
             throw new InvalidArgumentException('attributes must be array');
 
         if($options['subtree'])
-            $scope = QueryInterface::SCOPE_SUB;
+            $scope = Ldap\Adapter\QueryInterface::SCOPE_SUB;
         else
-            $scope = QueryInterface::SCOPE_ONE;
+            $scope = Ldap\Adapter\QueryInterface::SCOPE_ONE;
 
         $result = $this->ldap->query($options['base_dn'], $query, ['scope'=>$scope])->execute();
 
