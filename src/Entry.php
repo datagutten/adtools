@@ -103,9 +103,17 @@ abstract class Entry implements ArrayAccess
         return $this->entry->hasAttribute($offset);
     }
 
-    public function offsetGet($offset): ?array
+    /**
+     * @param mixed $offset
+     * @return array|string|null
+     */
+    public function offsetGet($offset)
     {
-        return $this->entry->getAttribute($offset);
+        $value = $this->entry->getAttribute($offset);
+        if (!empty($value) && count($value) == 1)
+            return $value[0];
+        else
+            return $value;
     }
 
     public function offsetSet($offset, $value)
