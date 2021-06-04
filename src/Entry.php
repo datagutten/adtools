@@ -15,30 +15,87 @@ abstract class Entry implements ArrayAccess
     /**
      * @var Ldap\Entry
      */
-    public $entry;
+    protected $entry;
 
     protected $entryManager;
+    /**
+     * @var string LDAP objectClass
+     */
+    protected $objectClass;
+    /**
+     * @var string Distinguished name
+     */
+    public $dn;
 
-    function __construct(Ldap\Ldap $ldap, string $dn, string $query)
+    function __construct(Ldap\Ldap $ldap, Ldap\Entry $entry)
     {
         $this->ldap = $ldap;
+        $this->entry = $entry;
         $this->entryManager = $this->ldap->getEntryManager();
-        $query = $this->ldap->query($dn, $query);
-        $this->entry = $query->execute()->toArray()[0];
-
+        $this->objectClass = static::objectClass;
+        $this->dn = $this->entry->getDn();
     }
 
     /**
+     * Get entry from DN
+     * @param Ldap\Ldap $ldap LDAP instance
+     * @param string $dn DN
+     * @return static
+     * @throws exceptions\MultipleHitsException
+     */
+    public static function from_dn(Ldap\Ldap $ldap, string $dn)
+    {
+        return self::from_query($ldap, $dn, sprintf('(objectClass=%s)', static::objectClass));
+    }
+
+    /**
+     * Get entry from attribute
      * @param Ldap\Ldap $ldap
-     * @param $dn
-     * @param $attributes
+     * @param string $dn
+     * @param string $attribute
+     * @param string $value
      * @return static
      */
-    public static function add(Ldap\Ldap $ldap, $dn, $attributes)
+    public static function from_attribute(Ldap\Ldap $ldap, string $dn, string $attribute, string $value)
+    {
+        $query = sprintf('(&(%s=%s)(objectClass=%s))',
+            adtools_utils::ldap_query_escape($attribute),
+            adtools_utils::ldap_query_escape($value),
+            static::objectClass
+        );
+        return self::from_query($ldap, $dn, $query);
+    }
+
+    /**
+     * Create object from LDAP query
+     * @param Ldap\Ldap $ldap
+     * @param string $dn
+     * @param string $query
+     * @return static
+     */
+    public static function from_query(Ldap\Ldap $ldap, string $dn, string $query)
+    {
+        $result = $ldap->query($dn, $query)->execute();
+        if ($result->count() > 1)
+            throw new exceptions\MultipleHitsException($query);
+        elseif($result->count() == 0)
+            throw new exceptions\NoHitsException($query);
+
+        $entry = $result->toArray()[0];
+        return new static($ldap, $entry);
+    }
+
+    /**
+     * @param Ldap\Ldap $ldap LDAP instance
+     * @param string $dn DN
+     * @param array $attributes Attributes
+     * @return static
+     */
+    public static function add(Ldap\Ldap $ldap, string $dn, array $attributes)
     {
         $entry = new Ldap\Entry($dn, $attributes);
         $ldap->getEntryManager()->add($entry);
-        return new static($ldap, $dn);
+        return static::from_dn($ldap, $dn);
     }
 
     public function offsetExists($offset): bool

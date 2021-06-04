@@ -8,14 +8,10 @@ use Symfony\Component\Ldap;
 
 class Group extends Entry implements Countable
 {
-    /**
-     * Group constructor.
-     * @param $ldap
-     * @param $dn
-     */
-    function __construct(Ldap\Ldap $ldap, string $dn)
+    const objectClass = 'group';
+    public static function from_dn(Ldap\Ldap $ldap, string $dn): Group
     {
-        parent::__construct($ldap, $dn, '(objectClass=group)');
+        return parent::from_dn($ldap, $dn);
     }
 
     public static function create(Ldap\Ldap $ldap, $name, $ou, $extra_attributes = []): Group
@@ -56,7 +52,7 @@ class Group extends Entry implements Countable
                 $members[] = $member;
             else
             {
-                $sub_group = new Group($this->ldap, $member);
+                $sub_group = self::from_dn($this->ldap, $member);
                 $members = array_merge($members, $sub_group->members_recursive());
             }
         }

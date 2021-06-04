@@ -5,12 +5,14 @@ namespace storfollo\adtools;
 
 
 use InvalidArgumentException;
+use Symfony\Component\Ldap;
 
 class User extends Entry
 {
-    public function __construct($ldap, $dn)
+    const objectClass = 'user';
+    public static function from_dn(Ldap\Ldap $ldap, string $dn): User
     {
-        parent::__construct($ldap, $dn, '(objectClass=user)');
+        return parent::from_dn($ldap, $dn);
     }
 
     /**
