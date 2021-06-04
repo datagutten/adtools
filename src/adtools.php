@@ -149,55 +149,22 @@ class adtools
     }
 
     /**
-     * Find an object in AD
-     * @param $name
-     * @param bool $base_dn
-     * @param string $type
-     * @param bool $fields
-     * @return array
-     * @throws Exception
+     * Find an single object in AD
+     * @param string $name
+     * @param string $base_dn Base DN
+     * @param string $type What to find
+     * @return Computer|User
+     * @throws NoHitsException No hits for the query
+     * @throws MultipleHitsException Multiple hits for the query
      */
-	function find_object($name,$base_dn=false,$type='user',$fields=false)
+	function find_object(string $name, string $base_dn, $type='user')
 	{
-		if($base_dn===false)
-			$base_dn=$this->config['dn'];
-
-		if($fields!==false && !is_array($fields))
-			throw new InvalidArgumentException("Fields must be array or false");
-
-		$options = array(
-		    'base_dn'=>$base_dn,
-            'single_result'=>true
-        );
-
-		if(!empty($fields))
-		    $options['attributes'] = $fields;
-
-		if($type=='user')
-        {
-            if(empty($options['attributes']))
-                $options['attributes'] = array('sAMAccountName');
-
-            return $this->ldap_query("(&(displayName=$name)(objectClass=user))", $options);
-        }
+		if($type=='user' || $type == 'username')
+            return User::from_attribute($this->ldap, $base_dn, 'sAMAccountName', $name);
 		elseif($type=='upn')
-        {
-            if(empty($options['attributes']))
-                $options['attributes'] = array('userPrincipalName');
-            return $this->ldap_query("(&(userPrincipalName=$name)(objectClass=user))", $options);
-        }
-		elseif($type=='username')
-        {
-            if(empty($options['attributes']))
-                $options['attributes'] = array('sAMAccountName');
-            return $this->ldap_query("(&(sAMAccountName=$name)(objectClass=user))", $options);
-        }
+            return User::from_attribute($this->ldap, $base_dn, 'userPrincipalName', $name);
 		elseif($type=='computer')
-        {
-            if(empty($options['attributes']))
-                $options['attributes'] = array('name');
-            return $this->ldap_query("(&(name=$name)(objectClass=computer))",$options);
-        }
+            return Computer::from_attribute($this->ldap, $base_dn, 'name', $name);
 		else
 			throw new InvalidArgumentException('Invalid type');
 	}
@@ -209,7 +176,7 @@ class adtools
      */
 	public function user($dn): User
     {
-        return new User($this->ldap, $dn);
+        return User::from_dn($this->ldap, $dn);
     }
 
     /**
@@ -219,6 +186,6 @@ class adtools
      */
 	public function group($dn): Group
     {
-        return new Group($this->ldap, $dn);
+        return Group::from_dn($this->ldap, $dn);
     }
 }
