@@ -38,9 +38,11 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Install and setup LDAP
+      - name: Install LDAP
+        run: sudo apt-get install ldap-utils slapd
+
+      - name: Setup LDAP
         run: |
-          sudo apt-get install ldap-utils slapd
           mkdir /tmp/slapd
           sudo killall /usr/sbin/slapd
           php tests/slapd/build_config.php
