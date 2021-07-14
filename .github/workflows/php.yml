@@ -39,7 +39,7 @@ jobs:
         run: docker build -t adtools_php_ldap tests
 
       - name: Start docker container
-        run: docker run -p 389:389 adtools_php_ldap -d
+        run: docker run -d -p 389:389 adtools_php_ldap
 
       - name: Install LDAP utils
         run: sudo apt-get install -y ldap-utils
