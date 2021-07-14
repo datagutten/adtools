@@ -45,16 +45,13 @@ class adtoolsWriteTest extends TestCase
         $user->move('OU=move,OU=adtools-test,OU=Test,DC=example,DC=com');
     }
 
-    /**
-     * @throws adtools\exceptions\LdapException
-     */
     public function testChange_password()
     {
         $user = $this->adtools->user('CN=user1,OU=Users,OU=adtools-test,OU=Test,DC=example,DC=com');
         $user->change_password('test2');
         $user->change_password( 'test2', true);
-        $result = $this->adtools->find_object('user1', 'OU=adtools-test,OU=Test,DC=example,DC=com','user', array('pwdLastSet'));
-        $this->assertEquals('0', $result);
+        $user_check = $this->adtools->find_object('user1', 'OU=adtools-test,OU=Test,DC=example,DC=com');
+        $this->assertEquals('0', $user_check['pwdLastSet']);
     }
 
     public function tearDown(): void
