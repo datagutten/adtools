@@ -6,4 +6,3 @@ slapd.conf
 clover.xml
 coverage_html
 .idea
-composer.lock
