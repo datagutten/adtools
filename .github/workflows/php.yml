@@ -33,7 +33,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: xdebug
-          extensions: curl
+          extensions: ldap, gettext
 
       - name: Install dependencies
         uses: php-actions/composer@v6
