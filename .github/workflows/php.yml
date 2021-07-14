@@ -36,9 +36,7 @@ jobs:
           extensions: ldap, gettext
 
       - name: Install dependencies
-        uses: php-actions/composer@v6
-        with:
-          php_version: ${{ matrix.php }}
+        run: composer install --prefer-dist --no-progress
 
       - name: Install and setup LDAP
         run: |
