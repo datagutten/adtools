@@ -37,7 +37,7 @@ jobs:
 
       - name: Install LDAP
         run: |
-          docker build -t adtools_php_ldap .
+          docker build -t adtools_php_ldap tests
           docker run -p 389:389 adtools_php_ldap -d
           sudo apt-get install -y ldap-utils
 
